@@ -1,8 +1,8 @@
 # FireXCore Agent Orbs
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-121212?logo=vercel)](https://agent-orbs-demo.vercel.app/) [![MIT License](https://img.shields.io/badge/License-MIT-blue)](LICENSE) [![CI](https://github.com/FireXCore/agent-orbs/actions/workflows/ci.yml/badge.svg)](https://github.com/FireXCore/agent-orbs/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-121212?logo=vercel)](https://agent-orbs-demo.vercel.app/) [![MIT License](https://img.shields.io/badge/License-MIT-blue)](LICENSE) [![Release v0.1.0](https://img.shields.io/badge/Release-v0.1.0-0a7)](https://github.com/FireXCore/agent-orbs/releases/tag/v0.1.0) [![CI](https://github.com/FireXCore/agent-orbs/actions/workflows/ci.yml/badge.svg)](https://github.com/FireXCore/agent-orbs/actions/workflows/ci.yml)
 
-**[Interactive live demo](https://agent-orbs-demo.vercel.app/)** · [Source repository](https://github.com/FireXCore/agent-orbs) · [Version history](CHANGELOG.md) · [Standalone preview](preview/)
+**[Interactive live demo](https://agent-orbs-demo.vercel.app/)** · [Release v0.1.0](https://github.com/FireXCore/agent-orbs/releases/tag/v0.1.0) · [Source repository](https://github.com/FireXCore/agent-orbs) · [Changelog](CHANGELOG.md)
 
 
 Nine independent, procedurally generated orbital status indicators for React + TypeScript. **This is a new codebase**, with its own mathematical geometry, renderer, animation scheduler, React API, tests, demo, and MIT license. It does not import or depend on ThinkingOrbs or thinking-orbs.
@@ -90,27 +90,14 @@ Make the selected `state` reflect an actual action: for example, only display `l
 - **Source:** https://github.com/FireXCore/agent-orbs
 - **Hosting:** Vercel, deployed from the standalone `preview/` source. The current demo is live; automatic Git-triggered Vercel deployments require the Vercel GitHub integration to have access to this repository.
 
-## GitHub publication
+## Releases
 
-The source repository is [FireXCore/agent-orbs](https://github.com/FireXCore/agent-orbs). On a Windows machine with Git and authenticated GitHub CLI, run:
+- **Latest release:** [v0.1.0](https://github.com/FireXCore/agent-orbs/releases/tag/v0.1.0)
+- **Downloadable distributable:** [firexcore-agent-orbs-0.1.0.tgz](https://github.com/FireXCore/agent-orbs/releases/download/v0.1.0/firexcore-agent-orbs-0.1.0.tgz)
+- **Changelog:** [CHANGELOG.md](CHANGELOG.md)
+- **Interactive demo:** [agent-orbs-demo.vercel.app](https://agent-orbs-demo.vercel.app/)
 
-```powershell
-.\scripts\publish-github.ps1 -Visibility private
-# Or select -Visibility public for an open-source repository.
-```
-
-Alternatively, after manually creating an empty GitHub repository named `agent-orbs` under `FireXCore`, run:
-
-```bash
-git init
-git add .
-git commit -m "feat: original agent orbs animation library"
-git branch -M main
-git remote add origin https://github.com/FireXCore/agent-orbs.git
-git push -u origin main
-```
-
-Repository creation and npm publication are not performed by these commands.
+The tarball is attached to the GitHub Release. The package is **not published to npmjs.org or GitHub Packages**; no registry publication is implied by the GitHub Release.
 
 ## Attribution
 
