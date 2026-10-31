@@ -26,7 +26,7 @@ jobs:
           echo "168d73331331d36ea740265e002cdc290803ee73ad17fe7511100b3b9b55d6f5  source.tar.gz" | sha256sum -c -
           tar -xzf source.tar.gz
           rm source.tar.gz
-          node scripts/build-preview.mjs
+          test -f preview/core/scenes.js
           node scripts/build-gallery-svg.mjs
           node scripts/test-core.mjs
       - name: Commit completed source repository
