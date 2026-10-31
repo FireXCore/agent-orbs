@@ -1,0 +1,68 @@
+{
+  "name": "@firexcore/agent-orbs",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Original procedural orbital status animations for React agent interfaces",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "dev": "vite --config vite.demo.config.ts",
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "build:demo": "vite build --config vite.demo.config.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check": "npm run typecheck && npm run test && npm run build && npm run build:demo && npm run build:preview && npm run test:core",
+    "build:preview": "node scripts/build-preview.mjs",
+    "build:gallery": "node scripts/build-gallery-svg.mjs",
+    "test:core": "node scripts/test-core.mjs"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "typescript": "^5.6.0",
+    "tsup": "^8.3.0",
+    "vite": "^6.0.0",
+    "vitest": "^2.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "author": "FireXCore",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FireXCore/agent-orbs.git"
+  },
+  "keywords": [
+    "react",
+    "typescript",
+    "canvas",
+    "animation",
+    "agent",
+    "loading",
+    "status",
+    "orb"
+  ]
+}
