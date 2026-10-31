@@ -97,7 +97,16 @@ Make the selected `state` reflect an actual action: for example, only display `l
 - **Changelog:** [CHANGELOG.md](CHANGELOG.md)
 - **Interactive demo:** [agent-orbs-demo.vercel.app](https://agent-orbs-demo.vercel.app/)
 
-The tarball is attached to the GitHub Release. The package is **not published to npmjs.org or GitHub Packages**; no registry publication is implied by the GitHub Release.
+The tarball is attached to the GitHub Release. The library is also published as **`@firexcore/agent-orbs@0.1.0`** on the [GitHub Packages npm registry](https://npm.pkg.github.com/) (not npmjs.org). GitHub Packages requires authenticated npm access; new packages default to private visibility until changed in GitHub package settings.
+
+To install with GitHub Packages authorization already configured:
+
+```bash
+npm config set @firexcore:registry https://npm.pkg.github.com
+npm install @firexcore/agent-orbs@0.1.0
+```
+
+See [GitHub's npm registry authentication guide](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry).
 
 ## Attribution
 
