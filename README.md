@@ -1,13 +1,15 @@
 # FireXCore Agent Orbs
 
-**[Live Demo — Vercel](https://agent-orbs-demo.vercel.app/)** · [Source repository](https://github.com/FireXCore/agent-orbs) · [Standalone preview files](preview/)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-121212?logo=vercel)](https://agent-orbs-demo.vercel.app/) [![MIT License](https://img.shields.io/badge/License-MIT-blue)](LICENSE) [![CI](https://github.com/FireXCore/agent-orbs/actions/workflows/ci.yml/badge.svg)](https://github.com/FireXCore/agent-orbs/actions/workflows/ci.yml)
+
+**[Interactive live demo](https://agent-orbs-demo.vercel.app/)** · [Source repository](https://github.com/FireXCore/agent-orbs) · [Version history](CHANGELOG.md) · [Standalone preview](preview/)
 
 
 Nine independent, procedurally generated orbital status indicators for React + TypeScript. **This is a new codebase**, with its own mathematical geometry, renderer, animation scheduler, React API, tests, demo, and MIT license. It does not import or depend on ThinkingOrbs or thinking-orbs.
 
 ![Nine original procedural animation states](assets/gallery.svg)
 
-[Launch the interactive demo](https://agent-orbs-demo.vercel.app/) — nine live animated states, theme, pause, speed, and accent controls.
+**Try the live gallery:** [agent-orbs-demo.vercel.app](https://agent-orbs-demo.vercel.app/) — all nine motion states with theme, pause, speed, accent and size previews.
 
 ## Features
 
