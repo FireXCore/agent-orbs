@@ -1,0 +1,41 @@
+name: Publish FireXCore Agent Orbs source
+on:
+  push:
+    paths:
+      - '.github/workflows/seed.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    if: github.repository == 'FireXCore/agent-orbs'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Extract and verify prepared project source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s bootstrap.txt
+          base64 -d bootstrap.txt > source.tar.gz
+          echo "168d73331331d36ea740265e002cdc290803ee73ad17fe7511100b3b9b55d6f5  source.tar.gz" | sha256sum -c -
+          tar -xzf source.tar.gz
+          rm source.tar.gz
+          node scripts/build-preview.mjs
+          node scripts/build-gallery-svg.mjs
+          node scripts/test-core.mjs
+      - name: Commit completed source repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f bootstrap.txt .github/workflows/seed.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'feat: publish original FireXCore Agent Orbs v0.1.0'
+          git push origin HEAD:main
