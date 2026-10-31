@@ -1,0 +1,44 @@
+name: Publish v0.1.0 Release
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-v0.1.0.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install
+      - name: Verify library and demos
+        run: npm run check
+      - name: Pack distributable library
+        run: |
+          mkdir -p release-assets
+          npm pack --pack-destination release-assets
+      - name: Publish release (idempotent)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view v0.1.0 >/dev/null 2>&1; then
+            echo "v0.1.0 is already published"
+            exit 0
+          fi
+          gh release create v0.1.0 release-assets/*.tgz \
+            --target "$GITHUB_SHA" \
+            --title "FireXCore Agent Orbs v0.1.0" \
+            --notes-file CHANGELOG.md \
+            --latest
