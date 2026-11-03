@@ -1,0 +1,34 @@
+name: Verify published Agent Orbs on public npm
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/verify-npmjs-availability.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Confirm npmjs.org public metadata after registry processing
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://registry.npmjs.org/%40firexcore%2Fagent-orbs/0.2.0'
+          for attempt in $(seq 1 36); do
+            http="$(curl --silent --show-error --location --max-time 12 --output /tmp/agent-orbs-version.json --write-out '%{http_code}' "$url" || true)"
+            if [[ "$http" == "200" ]] && node - <<'NODE'
+          const p=require('/tmp/agent-orbs-version.json');
+          if(p.name!=='@firexcore/agent-orbs'||p.version!=='0.2.0'||!p.dist?.tarball?.startsWith('https://registry.npmjs.org/'))process.exit(1);
+          console.log('PUBLIC_NPMJS_VERIFIED',p.name,p.version,p.dist.tarball);
+          NODE
+            then
+              exit 0
+            fi
+            echo "Public npm metadata not ready: HTTP $http, attempt $attempt / 36"
+            sleep 10
+          done
+          echo 'Public npm registry version still not readable after verification window' >&2
+          exit 1
