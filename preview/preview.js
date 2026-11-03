@@ -59,3 +59,65 @@ const themeButton=document.getElementById('theme');themeButton.onclick=()=>{ligh
 const pauseButton=document.getElementById('pause');pauseButton.onclick=()=>{paused=!paused;pauseButton.textContent=paused?'Play motion':'Pause motion';};
 const accentButton=document.getElementById('accent');accentButton.onclick=()=>{accent=!accent;accentButton.textContent=accent?'Monochrome':'Accent color';draw(frozenTime);};
 const speedButton=document.getElementById('speed');speedButton.onclick=()=>{speed=speed===1?1.5:speed===1.5?2:speed===2?0.5:1;speedButton.textContent=`Speed ${speed}×`;};
+
+/** MIT-licensed optional family: Schoolees/thinking-orbs; see third_party/thinking-orbs/NOTICE.md. */
+import { ThinkingOrb, ORB_STATES as INTERACTIVE_STATES } from './heritage/index.js';
+
+const heritageSection = document.createElement('section');
+heritageSection.className = 'heritage';
+heritageSection.innerHTML = `<div class="header"><span>03 / INTERACTIVE CONTOUR FAMILY</span><span>9 STATES / TWO STYLES / FOUR SIZES</span></div>
+  <p class="heritage-intro">A separately licensed, optional contour and dot family. Hover or drag to deform an orb. The original FireXCore geometry above remains unchanged.</p>
+  <div class="heritage-tools">
+    <button type="button" id="heritage-variant">Style: Contour</button>
+    <button type="button" id="heritage-pointer">Pointer: On</button>
+    <button type="button" id="heritage-size">Size: 96px</button>
+  </div>
+  <div class="grid" id="heritage-grid"></div>
+  <p class="heritage-credit">MIT adaptation of <a href="https://github.com/Schoolees/thinking-orbs" target="_blank" rel="noopener noreferrer">Schoolees/thinking-orbs</a>, derived from Jakub Antalik's work.</p>`;
+root.insertBefore(heritageSection, root.querySelector('footer'));
+const heritageGrid = document.getElementById('heritage-grid');
+const heritageOrbs = [];
+let heritageVariant = 'contour', heritagePointer = true, heritageSize = 96;
+for (const [i, state] of INTERACTIVE_STATES.entries()) {
+  const card = document.createElement('article');
+  card.className = 'card';
+  card.innerHTML = `<div class="stage"><canvas class="heritage-main" aria-hidden="true"></canvas><canvas class="heritage-tiny" aria-hidden="true"></canvas></div><div class="meta"><small>${String(i + 1).padStart(2,'0')}</small><div><b>${state}</b><p>${state==='idle' ? 'Ready for input' : state==='responding' ? 'Streaming response' : 'Classic particles or motion-matched contours'}</p></div></div>`;
+  heritageGrid.appendChild(card);
+  const main = card.querySelector('.heritage-main');
+  const tiny = card.querySelector('.heritage-tiny');
+  main.style.maxWidth = '128px';
+  main.style.maxHeight = '128px';
+  tiny.style.position = 'absolute';
+  tiny.style.top = '14px';
+  tiny.style.right = '14px';
+  tiny.style.opacity = '0.85';
+  heritageOrbs.push({
+    state, main: new ThinkingOrb(main, { state, size: heritageSize, variant: heritageVariant, interactive: heritagePointer, theme: light ? 'light' : 'dark', paused, speed }),
+    tiny: new ThinkingOrb(tiny, { state, size: 32, variant: heritageVariant, theme: light ? 'light' : 'dark', paused, speed })
+  });
+}
+function syncHeritage() {
+  for (const item of heritageOrbs) {
+    item.main.update({variant:heritageVariant,interactive:heritagePointer,size:heritageSize,paused,speed,theme:light?'light':'dark'});
+    item.tiny.update({variant:heritageVariant,paused,speed,theme:light?'light':'dark'});
+  }
+}
+document.getElementById('heritage-variant').onclick = () => {
+  heritageVariant = heritageVariant === 'contour' ? 'classic' : 'contour';
+  document.getElementById('heritage-variant').textContent = 'Style: ' + (heritageVariant === 'contour' ? 'Contour' : 'Classic dots');
+  syncHeritage();
+};
+document.getElementById('heritage-pointer').onclick = () => {
+  heritagePointer = !heritagePointer;
+  document.getElementById('heritage-pointer').textContent = 'Pointer: ' + (heritagePointer ? 'On' : 'Off');
+  syncHeritage();
+};
+document.getElementById('heritage-size').onclick = () => {
+  heritageSize = ({32:64,64:96,96:128,128:32})[heritageSize];
+  document.getElementById('heritage-size').textContent = 'Size: ' + heritageSize + 'px';
+  syncHeritage();
+};
+themeButton.addEventListener('click', syncHeritage);
+pauseButton.addEventListener('click', syncHeritage);
+speedButton.addEventListener('click', syncHeritage);
+window.addEventListener('pagehide', () => { for(const item of heritageOrbs){item.main.destroy();item.tiny.destroy();} }, {once:true});
