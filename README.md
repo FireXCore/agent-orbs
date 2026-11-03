@@ -134,7 +134,7 @@ See [GitHub's npm registry authentication guide](https://docs.github.com/en/pack
 
 ## Attribution
 
-Design direction: general-purpose particle motion for AI and operations interfaces. All implementation code, rendering equations and demo UI in this repository were independently authored. This repository is not a fork or dependency of third-party orb libraries.
+Design direction: general-purpose particle motion for AI and operations interfaces. The original nine FireXCore motion states and their rendering equations were independently authored. The optional v0.2 contour engine is adapted from Schoolees/thinking-orbs with attribution and separate MIT notices as documented above.
 
 ## License
 
