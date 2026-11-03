@@ -90,3 +90,36 @@ body[data-theme=light] .hero-stage,body[data-theme=light] .feature-visual{box-sh
 @media(max-width:900px){.container,.nav-inner{width:min(100% - 38px,1320px)}.nav-links{display:none}.hero{grid-template-columns:1fr;padding-top:62px}.hero-stage{max-width:680px;width:100%;height:400px;margin-inline:auto}.hero-copy{max-width:700px}.metrics{margin-top:35px}.capability{grid-template-columns:repeat(2,1fr)}.capability>div:nth-child(2){border-right:0}.capability>div:nth-child(-n+2){border-bottom:1px solid var(--stroke)}.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.feature-head{align-items:start;flex-direction:column}.feature-controls{align-items:center}.integration-layout{grid-template-columns:1fr}}
 @media(max-width:580px){.container,.nav-inner{width:calc(100% - 32px)}.nav-inner{min-height:70px}.brand{font-size:17px}.brand-icon{width:35px;height:35px}.brand-icon svg{width:25px}.nav-cta{font-size:10px;padding:10px 12px}.hero{padding-top:51px;padding-bottom:42px}.hero h1{font-size:clamp(43px,11vw,60px);margin:22px 0}.hero-subtitle{font-size:13px}.hero-stage{height:330px;border-radius:17px}.hero-stage canvas{transform:scale(.88)}.hero-spotlight{bottom:62px}.metrics{gap:13px}.metrics b{font-size:20px}.metrics div span{font-size:8px}.metric-divider{height:32px}.capability{padding:10px 4px}.capability>div{font-size:9px;justify-content:start;gap:7px}.capability-icon{font-size:15px}.collection{padding-top:79px}.section-top{flex-direction:column;align-items:start}.index-note{font-size:8px}.control-panel{padding:13px}.control-row{gap:12px}.control-set{flex-wrap:wrap}.control-label{font-size:8px}.pause-button{margin-left:0}.gallery-grid{grid-template-columns:1fr}.orb-art{height:205px}.orb-card{min-height:290px}.feature-section{padding-top:84px}.feature-visual{height:350px;border-radius:15px}.feature-orb-wrap{transform:scale(.77)}.edge-left{left:16px;top:16px;font-size:8px}.edge-right{top:auto;right:16px;bottom:16px;font-size:8px}.feature-signal{bottom:44px}.feature-signal small{display:none}.integration-section{padding-top:85px;padding-bottom:77px}.code-card pre{font-size:11px;padding:20px}.footer-inner{padding:19px 0;align-items:start;flex-direction:column}.foot-muted{display:none}.stage-bottom-right{display:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
+
+
+/* Mono Lattice: original MIT-attributed classic dots on matte, neutral surfaces.
+   This visual family deliberately does not inherit the luminous FireXCore glow. */
+.mono-intro{display:flex;align-items:end;justify-content:space-between;gap:24px;padding:14px 3px 25px}
+.mono-intro .section-kicker{display:block;margin-bottom:10px}
+.mono-intro h3{margin:0 0 11px;font-size:clamp(22px,2.5vw,31px);letter-spacing:-.055em}
+.mono-intro h3 span{font-weight:500;color:var(--sub)}
+.mono-intro p{max-width:660px;color:var(--sub);font-size:12px;line-height:1.9;margin:0}
+.mono-caption{font:10px "DM Mono",monospace;letter-spacing:.11em;white-space:nowrap;color:var(--muted)}
+.mono-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.mono-card{display:flex;flex-direction:column;text-align:left;min-width:0;min-height:474px;padding:23px 24px 25px;border:1px solid #3f3f46;border-radius:19px;background:#27272a;color:#f4f4f5;cursor:pointer;transition:border-color .18s,box-shadow .18s}
+.mono-card:hover,.mono-card.active{border-color:#9797a3;box-shadow:0 0 0 1px rgba(205,205,216,.12)}
+.mono-index{display:block;color:#a1a1aa;font:10px "DM Mono",monospace;letter-spacing:.13em}
+.mono-sizes{display:grid;width:100%;grid-template-columns:minmax(128px,1fr) minmax(96px,1fr);gap:17px 10px;align-items:end;flex:1}
+.mono-size-cell{display:grid;min-width:0;min-height:157px;place-content:end center;justify-items:center;gap:11px}
+.mono-size-cell canvas{display:block;max-width:none;filter:none!important;transform:none!important;box-shadow:none!important}
+.mono-size-cell small{color:#a1a1aa;font-size:11px;font-weight:800;white-space:nowrap}
+.mono-details{margin-top:13px}
+.mono-details h3{font-size:21px;letter-spacing:-.04em;margin:0 0 9px;font-weight:750;text-transform:capitalize}
+.mono-details code{font:11px/1.7 "DM Mono",monospace;color:#a1a1aa;display:block;white-space:normal;overflow-wrap:anywhere}
+body[data-theme=light] .mono-card{background:#fff;color:#18181b;border-color:#e4e4e7}
+body[data-theme=light] .mono-card:hover,body[data-theme=light] .mono-card.active{border-color:#8b8b99}
+body[data-theme=light] .mono-details code,body[data-theme=light] .mono-size-cell small,body[data-theme=light] .mono-index{color:#71717a}
+.integration-preview[data-orb-family=mono]{background:#27272a;border-color:#3f3f46;color:#f4f4f5}
+.integration-preview[data-orb-family=mono] canvas{filter:none!important;transform:none!important}
+.integration-preview[data-orb-family=mono] .selected-label{color:#e4e4e7}
+.integration-preview[data-orb-family=mono] .integration-caption,.integration-preview[data-orb-family=mono] p{color:#a1a1aa}
+body[data-theme=light] .integration-preview[data-orb-family=mono]{background:#fff;color:#18181b;border-color:#e4e4e7}
+body[data-theme=light] .integration-preview[data-orb-family=mono] .selected-label{color:#27272a}
+@media(max-width:1000px){.mono-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:660px){.mono-grid{grid-template-columns:1fr}.mono-intro{align-items:start;flex-direction:column;gap:10px}}
+@media(max-width:360px){.mono-card{padding:18px 15px}.mono-sizes{gap:12px 7px}}

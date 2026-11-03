@@ -26,11 +26,14 @@ const messages = {
 const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 let reduced = reducedQuery.matches;
 let mode = 'original', light = false, paused = false, speed = 1;
-let selectedOriginal = 'working', selectedContour = 'responding', variant = 'contour';
+let selectedOriginal = 'working', selectedContour = 'responding', selectedMono = 'listening', variant = 'contour';
 let featureState = 'responding', pointerEnabled = true;
 let clock = 0, previous = 0;
 const originalInstances = [];
 const contourInstances = [];
+const monoInstances = [];
+let monoInitialized = false;
+const MONO_SIZES = [128, 96, 64, 32];
 let featureInstance = null;
 let integrationContour = null;
 
@@ -101,6 +104,65 @@ function makeContourCard(state,index) {
 }
 CONTOUR_STATES.forEach((state,i)=>$('contour-grid').appendChild(makeContourCard(state,i)));
 
+/** A third *visual family*, not another rendering engine. Uses the exact classic
+ * profiles from Schoolees/thinking-orbs, retained under MIT in src/heritage.
+ * Each canvas is rendered at its native size with its own density preset.
+ */
+function makeMonoCard(state,index) {
+  const card=document.createElement('button');
+  card.type='button';card.className='mono-card';
+  card.dataset.state=state;
+  card.setAttribute('aria-pressed',String(state===selectedMono));
+  const badge=document.createElement('span');
+  badge.className='mono-index';
+  badge.textContent=String(index+1).padStart(2,'0')+' / 09';
+  const gallery=document.createElement('div');
+  gallery.className='mono-sizes';
+  for(const size of MONO_SIZES) {
+    const cell=document.createElement('div');
+    cell.className='mono-size-cell';
+    const canvas=document.createElement('canvas');
+    canvas.setAttribute('aria-label',state+' — native '+size+' pixel monochrome lattice orb');
+    canvas.style.filter='none';
+    canvas.style.transform='none';
+    cell.appendChild(canvas);
+    const label=document.createElement('small');
+    label.textContent=size+'px';
+    cell.appendChild(label);
+    gallery.appendChild(cell);
+    const controller=new ThinkingOrb(canvas,{
+      state,size,theme:light?'light':'dark',variant:'classic',
+      speed,paused,interactive:true
+    });
+    monoInstances.push({state,size,controller});
+  }
+  const details=document.createElement('div');
+  details.className='mono-details';
+  const heading=document.createElement('h3');
+  heading.textContent=state[0].toUpperCase()+state.slice(1);
+  const config=document.createElement('code');
+  config.textContent='state="'+state+'" · variant="classic"';
+  details.append(heading,config);
+  card.append(badge,gallery,details);
+  card.addEventListener('click',()=>{
+    selectedMono=state;
+    document.querySelectorAll('#mono-grid .mono-card').forEach(el=>{
+      const active=el.dataset.state===state;
+      el.classList.toggle('active',active);
+      el.setAttribute('aria-pressed',String(active));
+    });
+    if(mode==='mono')syncIntegration();
+  });
+  if(state===selectedMono)card.classList.add('active');
+  return card;
+}
+function ensureMonoGallery() {
+  if(monoInitialized)return;
+  monoInitialized=true;
+  CONTOUR_STATES.forEach((state,i)=>$('mono-grid').appendChild(makeMonoCard(state,i)));
+}
+
+
 featureInstance=new ThinkingOrb($('feature-orb'),{
   state:featureState,size:128,theme:'dark',variant,interactive:pointerEnabled,paused,speed
 });
@@ -108,7 +170,7 @@ featureInstance=new ThinkingOrb($('feature-orb'),{
 const palettes={dark:{ink:'#94d4ff',accent:'#be9bff'},light:{ink:'#1b4775',accent:'#6c42ba'}};
 function drawOriginal(instance,time){
   if(!instance.visible||!instance.ctx)return;
-  if(instance===integration && mode==='contour')return;
+  if(instance===integration && mode!=='original')return;
   const palette=palettes[instance.fixedDark?'dark':light?'light':'dark'];
   const {ctx,dpr,size,state}=instance;
   ctx.setTransform(dpr,0,0,dpr,0,0);
@@ -125,45 +187,68 @@ function frame(now) {
 requestAnimationFrame(frame);
 
 function switchMode(next){
+  if(!['original','contour','mono'].includes(next))throw new TypeError('Unknown orb family');
+  if(next==='mono')ensureMonoGallery();
   mode=next;
   $('original-grid').hidden=next!=='original';
   $('contour-grid').hidden=next!=='contour';
-  $('tab-original').classList.toggle('active',next==='original');
-  $('tab-contour').classList.toggle('active',next==='contour');
-  $('tab-original').setAttribute('aria-pressed',String(next==='original'));
-  $('tab-contour').setAttribute('aria-pressed',String(next==='contour'));
-  $('gallery-heading').textContent=next==='original'?'ORIGINAL CANVAS ENGINE':'INTERACTIVE CONTOUR FAMILY';
-  $('gallery-count').textContent='09 STATES · '+(next==='original'?'ORIGINAL':'CLASSIC + CONTOUR');
-  $('variant-control').style.display=next==='original'?'none':'flex';
-  $('gallery-note').textContent=next==='original'
-    ?'Original FireXCore engine: nine independently authored mathematical scenes, implemented with Canvas 2D. No WebGL or prerecorded animation.'
-    :'Optional interactive engine, adapted under MIT from Schoolees/thinking-orbs and Jakub Antalik. Nine states, two visual variants and pointer/touch interaction.';
+  $('mono-grid').hidden=next!=='mono';
+  $('mono-intro').hidden=next!=='mono';
+  for(const family of ['original','contour','mono']) {
+    const tab=$('tab-'+family);
+    tab.classList.toggle('active',next===family);
+    tab.setAttribute('aria-pressed',String(next===family));
+  }
+  const names={original:'ORIGINAL CANVAS ENGINE',contour:'INTERACTIVE CONTOUR FAMILY',mono:'MONO LATTICE · ORIGINAL HALFTONE DOTS'};
+  $('gallery-heading').textContent=names[next];
+  $('gallery-count').textContent=next==='mono'?'09 STATES · 04 NATIVE SIZES':'09 STATES · '+(next==='original'?'ORIGINAL':'CONTOUR + CLASSIC');
+  $('variant-control').hidden=next!=='contour';
+  const notes={
+    original:'Original FireXCore engine: nine independently authored mathematical scenes, implemented with Canvas 2D. No WebGL or prerecorded animation.',
+    contour:'Optional interactive contour family, adapted under MIT from Schoolees/thinking-orbs and Jakub Antalik.',
+    mono:'Mono Lattice uses the upstream classic monochrome dot renderer and native state/size-specific presets (128, 96, 64, 32px). No FireXCore color palette, glow, resizing, or contour substitution. MIT attribution preserved.'
+  };
+  $('gallery-note').textContent=notes[next];
   syncIntegration();
 }
 $('tab-original').addEventListener('click',()=>switchMode('original'));
 $('tab-contour').addEventListener('click',()=>switchMode('contour'));
+$('tab-mono').addEventListener('click',()=>switchMode('mono'));
 
 function syncIntegration(){
   const canvas=$('integration-orb');
   if(integrationContour){integrationContour.destroy();integrationContour=null}
+  const host=canvas.closest('.integration-preview');
+  if(host)host.dataset.orbFamily=mode;
   if(mode==='original'){
+    // Restore the original 152px high-DPI backing store after a heritage controller.
+    canvas.width=Math.round(152*integration.dpr);
+    canvas.height=Math.round(152*integration.dpr);
+    canvas.style.width='152px';
+    canvas.style.height='152px';
     integration.state=selectedOriginal;
-    integration.canvas.style.display='block';
     $('integration-label').textContent=messages[selectedOriginal];
   } else {
-    integration.canvas.style.display='block';
+    const state=mode==='mono'?selectedMono:selectedContour;
     integrationContour=new ThinkingOrb(canvas,{
-      state:selectedContour,size:128,theme:light?'light':'dark',variant,paused,speed,interactive:false
+      state,size:128,theme:light?'light':'dark',
+      variant:mode==='mono'?'classic':variant,
+      paused,speed,interactive:false
     });
-    $('integration-label').textContent=messages[selectedContour];
+    $('integration-label').textContent=messages[state];
   }
+  canvas.style.display='block';
   writeCode();
 }
 function writeCode(){
-  const state=mode==='original'?selectedOriginal:selectedContour;
-  const value=mode==='original'
-    ? "import { AgentOrb } from '@firexcore/agent-orbs';\n\n<AgentOrb\n  state=\""+state+"\"\n  size={96}\n  theme=\"auto\"\n  speed={1}\n/>"
-    : "import { InteractiveOrb } from '@firexcore/agent-orbs';\n\n<InteractiveOrb\n  state=\""+state+"\"\n  variant=\""+variant+"\"\n  size={128}\n  interactive\n/>";
+  let value;
+  if(mode==='original') {
+    value="import { AgentOrb } from '@firexcore/agent-orbs';\n\n<AgentOrb\n  state=\""+selectedOriginal+"\"\n  size={96}\n  theme=\"auto\"\n  speed={1}\n/>";
+  } else if(mode==='mono') {
+    value="import { MonoLatticeOrb } from '@firexcore/agent-orbs';\n\n<MonoLatticeOrb\n  state=\""+selectedMono+"\"\n  size={128} // also 96, 64, 32\n  theme=\"auto\"\n  interactive\n/>";
+  } else {
+    value="import { InteractiveOrb } from '@firexcore/agent-orbs';\n\n<InteractiveOrb\n  state=\""+selectedContour+"\"\n  variant=\""+variant+"\"\n  size={128}\n  interactive\n/>";
+  }
   $('code-example').textContent=value;
 }
 $('copy-code').addEventListener('click',async()=>{
@@ -184,11 +269,13 @@ $('copy-code').addEventListener('click',async()=>{
 $('theme').addEventListener('change',e=>{
   light=e.target.value==='light';document.body.dataset.theme=light?'light':'dark';
   contourInstances.forEach(({controller})=>controller.setTheme(light?'light':'dark'));
+  monoInstances.forEach(({controller})=>controller.setTheme(light?'light':'dark'));
   if(integrationContour)integrationContour.setTheme(light?'light':'dark');
 });
 $('speed').addEventListener('change',e=>{
   speed=Number(e.target.value);
   contourInstances.forEach(({controller})=>controller.setSpeed(speed));
+  monoInstances.forEach(({controller})=>controller.setSpeed(speed));
   featureInstance.setSpeed(speed);
   integrationContour?.setSpeed(speed);
 });
@@ -204,6 +291,7 @@ $('pause').addEventListener('click',()=>{
   $('pause').setAttribute('aria-pressed',String(paused));
   $('pause').innerHTML='<span id="pause-icon">'+(paused?'▶':'Ⅱ')+'</span> '+(paused?'Resume':'Pause');
   contourInstances.forEach(({controller})=>paused?controller.pause():controller.resume());
+  monoInstances.forEach(({controller})=>paused?controller.pause():controller.resume());
   paused?featureInstance.pause():featureInstance.resume();
   if(integrationContour)paused?integrationContour.pause():integrationContour.resume();
 });
@@ -224,5 +312,6 @@ window.addEventListener('pagehide',()=>{
   featureInstance?.destroy();
   integrationContour?.destroy();
   contourInstances.forEach(({controller})=>controller.destroy());
+  monoInstances.forEach(({controller})=>controller.destroy());
 },{once:true});
 switchMode('original');

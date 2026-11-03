@@ -83,6 +83,30 @@ For a framework-free custom element, import `@firexcore/agent-orbs/register` onc
 - `scripts/render-motion-frames.mjs` — deterministic renderer used to generate GIF source frames.
 - `preview/index.html`, `preview/styles.css`, `preview/preview.js` — source of the live Vercel showcase (not prerecorded graphics).
 
+## Mono Lattice — classic monochrome family
+
+The visual gallery has **three separately named families** across **two rendering engines**:
+
+| Gallery family | Renderer | Visual treatment |
+| --- | --- | --- |
+| **Original** | Independent FireXCore Canvas 2D engine | Colorful, softly luminous particles |
+| **Contour family** | MIT-licensed Schoolees/Jakub Antalik heritage engine | Lines/contours and pointer-reactive variants |
+| **Mono Lattice** | Same MIT-licensed heritage engine, *classic* mode | Neutral grayscale halftone dots, no glow, native density presets |
+
+**Mono Lattice** intentionally reproduces the upstream [Thinking Orbs monochrome gallery](https://schoolees.github.io/thinking-orbs/): all nine states at **128, 96, 64 and 32px**, each rendered natively, not resized from a single large orb. It uses the upstream \`variant="classic"\`, \`resolvePreset(state, size)\`, and \`ThinkingOrb\` controller already retained in the repository. This is not a third independent engine and its mathematics are not claimed as original FireXCore work.
+
+\`\`\`tsx
+import { MonoLatticeOrb } from '@firexcore/agent-orbs';
+
+// Distinct, named component: always renders the classic monochrome dots.
+<MonoLatticeOrb state="listening" size={128} theme="dark" interactive />
+<MonoLatticeOrb state="listening" size={96} theme="dark" interactive />
+<MonoLatticeOrb state="listening" size={64} theme="dark" interactive />
+<MonoLatticeOrb state="listening" size={32} theme="dark" interactive />
+\`\`\`
+
+The four-size showcase is available in the [Mono Lattice gallery tab](https://agent-orbs-demo.vercel.app/#gallery). The original FireXCore orbs and the interactive contour gallery remain available as separate tabs. License and origin notices: [third_party/thinking-orbs/LICENSE](third_party/thinking-orbs/LICENSE) and [third_party/thinking-orbs/NOTICE.md](third_party/thinking-orbs/NOTICE.md).
+
 ## Run locally
 
 ```bash

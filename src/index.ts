@@ -21,3 +21,6 @@ export type {
   ThinkingOrbSnapshot,
   ThinkingOrbTarget
 } from './heritage/types';
+
+export { MonoLatticeOrb } from './MonoLatticeOrb';
+export type { MonoLatticeOrbProps } from './MonoLatticeOrb';
