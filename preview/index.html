@@ -1,6 +1,143 @@
-<!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>FireXCore Agent Orbs — Preview</title>
-<style>
-:root{font-family:Inter,Arial,sans-serif;background:#090c12;color:#ecf3ff}*{box-sizing:border-box}body{margin:0;background:#090c12}body:has(.light){background:#f2f5f7}.page{margin:auto;max-width:1200px;padding:0 32px}.top{height:90px;border-bottom:1px solid #2b3441;display:flex;justify-content:space-between;align-items:center}.brand{font-size:16px;font-weight:750;letter-spacing:-.05em}.brand b{color:#81c6ff}.brand small{font-weight:400;color:#93a2b5;font-size:11px;letter-spacing:.08em}.v{font-size:10px;letter-spacing:.15em;color:#96a6ba}.hero{padding:80px 0 58px}.eyebrow{font:11px ui-monospace,monospace;letter-spacing:.15em;color:#83bfff}.hero h1{font-size:clamp(45px,6vw,83px);line-height:1.06;letter-spacing:-.07em;margin:20px 0;font-weight:700}.hero h1 em{font-style:normal;color:#8391a5}.intro{font-size:14px;color:#94a2b4;line-height:1.8;max-width:590px}.buttons{display:flex;gap:9px;margin-top:32px;flex-wrap:wrap}button,select{font:inherit}button{background:#151b25;border:1px solid #344050;color:#f1f5fc;padding:11px 15px;border-radius:6px;cursor:pointer}button:hover,button.active{border-color:#8fcaff}.buttons button{font-size:12px}.header{display:flex;justify-content:space-between;border-top:1px solid #303946;padding:20px 0;font:11px ui-monospace,monospace;color:#a5b4c5}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card{text-align:left;min-height:230px;background:#121821;border:1px solid #2a3442;border-radius:10px;overflow:hidden;padding:0}.card.selected{border-color:#84c9ff}.stage{height:145px;display:flex;align-items:center;justify-content:center;position:relative;border-bottom:1px solid #2a3442}.stage canvas.big{width:76px;height:76px}.stage canvas.small{position:absolute;right:23px;top:20px;width:24px;height:24px}.meta{display:grid;grid-template-columns:30px 1fr;padding:20px}.meta b{font-size:14px;text-transform:capitalize}.meta small{font:10px ui-monospace,monospace;color:#8290a1}.meta p{font-size:11px;color:#8799ae;line-height:1.55;margin:7px 0 0}.integration{padding:68px 0}.demo{background:#121821;border:1px solid #2a3442;border-radius:10px;min-height:210px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}.status{font-size:13px;color:#b9c6d7}footer{margin-top:32px;padding:22px 0;border-top:1px solid #2a3442;display:flex;justify-content:space-between;color:#728399;font:10px ui-monospace,monospace}.light{background:#f2f5f7;color:#192333}.light .top,.light .header,.light footer{border-color:#d3dce6}.light .hero h1 em{color:#758399}.light .intro,.light .v{color:#718095}.light .card,.light .demo{background:white;border-color:#d6dfe9}.light .card.selected{border-color:#356e9d}.light .stage{border-color:#d6dfe9}.light .meta small,.light .meta p,.light footer{color:#718095}.light button{background:#fff;color:#182331;border-color:#ccd7e3}.light button.active{border-color:#356e9d}.light .status{color:#324456}@media(max-width:760px){.page{padding:0 18px}.grid{grid-template-columns:repeat(2,1fr)}.hero{padding:60px 0 45px}.top{height:70px}.v{display:none}.meta{padding:14px;grid-template-columns:24px 1fr}}@media(max-width:440px){.grid{grid-template-columns:1fr}}
-.heritage{padding:30px 0 58px}.heritage-intro{font-size:12px;line-height:1.8;color:#91a4bb;margin:0 0 16px}.heritage-tools{display:flex;gap:9px;flex-wrap:wrap;margin:16px 0 25px}.heritage-tools button{font-size:12px}.heritage-halo{height:160px;display:flex;align-items:center;justify-content:center}.heritage-credit{font-size:11px;color:#8b9aaf;margin-top:23px}.heritage-credit a{color:#83bfff}.heritage .card{cursor:default}.heritage .card .stage{height:166px}.heritage .card .stage canvas{display:block}.heritage .meta{min-height:88px}.light .heritage-intro,.light .heritage-credit{color:#68798b}
-</style></head><body><div id="app" class="page"><div class="top"><div class="brand"><b>✳</b> FIREXCORE <small>/ AGENT ORBS</small></div><span class="v">V0.2 / ORIGINAL + INTERACTIVE CONTOUR</span></div><section class="hero"><div class="eyebrow">PROCEDURAL MOTION LIBRARY — 001</div><h1>A language for<br><em>systems in motion.</em></h1><p class="intro">Nine original orbital states plus an optional interactive contour family for AI agents and operational interfaces. Pure mathematical geometry, software 3D and Canvas 2D. No external rendering library.</p><div class="buttons"><button id="theme">Light mode</button><button id="pause">Pause motion</button><button id="accent">Accent color</button><button id="speed">Speed 1×</button></div></section><section><div class="header"><span>01 / THE COLLECTION</span><span>TWO PURPOSE-TUNED SIZES</span></div><div class="grid" id="grid"></div></section><section class="integration"><div class="header"><span>02 / LIVE STATUS</span><span>READY FOR RMS</span></div><div class="demo"><canvas id="feature" width="112" height="112"></canvas><div class="status" id="status">Searching suppliers</div></div></section><footer><span>© 2026 FIREXCORE</span><span>ORIGINAL PROCEDURAL ENGINE / MIT</span></footer></div><script type="module" src="./preview.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070d1b">
+  <meta name="description" content="Explore FireXCore Agent Orbs: original procedural Canvas animations and an interactive contour family. Live previews, light/dark themes, variants, and integration examples.">
+  <meta property="og:title" content="FireXCore / Agent Orbs — A language for systems in motion">
+  <meta property="og:description" content="18 live motion states across two engines. Explore animated, pointer-reactive agent indicators in your browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://raw.githubusercontent.com/FireXCore/agent-orbs/main/assets/showcase.svg">
+  <meta property="og:url" content="https://agent-orbs-demo.vercel.app/">
+  <title>FireXCore / Agent Orbs — Interactive Motion Gallery</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-theme="dark">
+  <div class="noise" aria-hidden="true"></div>
+  <header class="site-header" id="top">
+    <div class="nav-inner">
+      <a href="#top" class="brand" aria-label="FireXCore Agent Orbs home">
+        <span class="brand-icon"><svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><ellipse cx="20" cy="20" rx="15" ry="6.5" transform="rotate(-36 20 20)" stroke="currentColor" stroke-width="1.8"/><circle cx="32" cy="11" r="3.5" fill="currentColor"/><circle cx="9" cy="29" r="2" fill="currentColor" opacity=".65"/></svg></span>
+        <span>FireXCore <span class="brand-slash">/</span> <strong>Agent Orbs</strong></span>
+      </a>
+      <nav aria-label="Main navigation" class="nav-links">
+        <a href="#gallery" class="nav-active">Gallery</a>
+        <a href="#interactive">Interactive</a>
+        <a href="#integration">Integration</a>
+        <a href="https://github.com/FireXCore/agent-orbs" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+      </nav>
+      <a class="nav-cta" href="#gallery">Explore the orbs <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero container" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="live-led"></span> PROCEDURAL MOTION SYSTEM <span class="eyebrow-line"></span> V0.2</div>
+        <h1 id="hero-title">A language for<br><span class="gradient-word">systems in motion.</span></h1>
+        <p class="hero-subtitle">Meaningful, real-time visual feedback for AI agents and operational interfaces. Original procedural geometry meets an optional pointer-reactive contour family.</p>
+        <div class="hero-actions">
+          <a class="primary-link" href="#gallery">Explore live gallery <span aria-hidden="true">↗</span></a>
+          <a class="secondary-link" href="https://github.com/FireXCore/agent-orbs" target="_blank" rel="noopener noreferrer">View source <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="metrics" aria-label="Library features">
+          <div><b>09</b><span>ORIGINAL STATES</span></div>
+          <span class="metric-divider"></span>
+          <div><b>09</b><span>CONTOUR STATES</span></div>
+          <span class="metric-divider"></span>
+          <div><b>02</b><span>RENDER FAMILIES</span></div>
+        </div>
+      </div>
+      <div class="hero-stage">
+        <div class="stage-orbits stage-ring-one"></div><div class="stage-orbits stage-ring-two"></div>
+        <span class="stage-kicker">LIVE / CANVAS RENDER</span>
+        <canvas id="hero-orb" width="248" height="248" role="img" aria-label="Live animated Working orb"></canvas>
+        <div class="hero-spotlight" aria-hidden="true"></div>
+        <div class="stage-bottom"><span class="stage-dot"></span><span id="hero-status">WORKING</span><span class="stage-bottom-right">100% PROCEDURAL</span></div>
+        <div class="stage-corner stage-corner-a"></div><div class="stage-corner stage-corner-b"></div>
+      </div>
+    </section>
+
+    <section class="capability container" aria-label="Capabilities">
+      <div><span class="capability-icon">✦</span><span>True procedural geometry</span></div>
+      <div><span class="capability-icon">◎</span><span>React + vanilla JavaScript</span></div>
+      <div><span class="capability-icon">⌘</span><span>Pointer-reactive variants</span></div>
+      <div><span class="capability-icon">◐</span><span>Light / dark ready</span></div>
+    </section>
+
+    <section class="collection container" id="gallery" aria-labelledby="gallery-title">
+      <div class="section-top">
+        <div><div class="section-kicker">01 / THE LIBRARY</div><h2 id="gallery-title">Motion, with <em>purpose.</em></h2>
+          <p>Every form is generated in real time. Select a state to explore its behavior and copy integration code.</p></div>
+        <span class="index-note"><span class="live-led"></span> INTERACTIVE DEMO</span>
+      </div>
+
+      <div class="control-panel" aria-label="Preview controls">
+        <div class="control-heading"><span class="controls-glyph">☷</span><span>LIVE CONTROLS</span></div>
+        <div class="control-row">
+          <div class="control-set" role="group" aria-label="Animation engine">
+            <span class="control-label">ENGINE</span>
+            <div class="segments">
+              <button id="tab-original" class="seg active" aria-pressed="true" type="button">Original</button>
+              <button id="tab-contour" class="seg" aria-pressed="false" type="button">Contour family</button>
+            </div>
+          </div>
+          <label class="control-set"><span class="control-label">THEME</span><select id="theme" aria-label="Theme"><option value="dark">Dark</option><option value="light">Light</option></select></label>
+          <label class="control-set"><span class="control-label">SPEED</span><select id="speed" aria-label="Speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label>
+          <label class="control-set" id="variant-control"><span class="control-label">STYLE</span><select id="variant" aria-label="Contour style"><option value="contour">Contour</option><option value="classic">Classic dots</option></select></label>
+          <button type="button" class="pause-button" id="pause" aria-pressed="false"><span id="pause-icon">Ⅱ</span> Pause</button>
+        </div>
+      </div>
+
+      <div class="gallery-heading"><span id="gallery-heading">ORIGINAL CANVAS ENGINE</span><span id="gallery-count">09 STATES · 01 FAMILY</span></div>
+      <div class="gallery-grid" id="original-grid"></div>
+      <div class="gallery-grid" id="contour-grid" hidden></div>
+      <p class="gallery-note" id="gallery-note">Original FireXCore engine. Nine independently authored mathematical scenes. No WebGL, videos, GIFs or third-party render libraries.</p>
+    </section>
+
+    <section class="feature-section container" id="interactive" aria-labelledby="interactive-title">
+      <div class="feature-head">
+        <div><div class="section-kicker">02 / BUILT TO RESPOND</div><h2 id="interactive-title">Not just animated.<br><em>Interactive.</em></h2>
+        <p>Move your pointer over the contour orb. Watch the geometry bend and return to rest. The effect is generated by real code, not a prerecorded clip.</p></div>
+        <div class="feature-controls">
+          <label><span>STATE</span><select id="feature-state" aria-label="Interactive featured orb state"><option value="responding">Responding</option><option value="working">Working</option><option value="searching">Searching</option><option value="idle">Idle</option><option value="connecting">Connecting</option><option value="solving">Solving</option><option value="listening">Listening</option><option value="composing">Composing</option><option value="shaping">Shaping</option></select></label>
+          <label class="switch-line"><input id="pointer" type="checkbox" checked><span>POINTER INTERACTION</span></label>
+        </div>
+      </div>
+      <div class="feature-visual">
+        <div class="grid-lines" aria-hidden="true"></div>
+        <div class="feature-orb-wrap"><canvas id="feature-orb" width="128" height="128" role="img" aria-label="Interactive responding orb"></canvas></div>
+        <span class="edge-note edge-left">INTERACTIVE CANVAS / 128PX</span><span class="edge-note edge-right">MOVE POINTER OR DRAG TO INTERACT</span>
+        <div class="feature-signal"><span class="live-led"></span><span id="feature-state-text">RESPONDING</span><small>· CONTOUR ENGINE</small></div>
+      </div>
+      <p class="attribution">Contour family adapted under MIT from <a href="https://github.com/Schoolees/thinking-orbs" target="_blank" rel="noopener noreferrer">Schoolees/thinking-orbs</a> and the work of Jakub Antalik. Original FireXCore scenes remain independent.</p>
+    </section>
+
+    <section class="integration-section container" id="integration" aria-labelledby="integration-title">
+      <div class="section-top">
+        <div><div class="section-kicker">03 / DEVELOPER EXPERIENCE</div><h2 id="integration-title">Looks alive.<br><em>Works anywhere.</em></h2><p>React components, an imperative DOM controller, and a standards-based custom element.</p></div>
+        <a class="docs-link" href="https://github.com/FireXCore/agent-orbs#optional-contour-and-interactive-family-v02-source" target="_blank" rel="noopener noreferrer">Read documentation ↗</a>
+      </div>
+      <div class="integration-layout">
+        <div class="code-card">
+          <div class="code-title"><span><span class="code-led"></span> REACT / TYPESCRIPT</span><button type="button" id="copy-code">Copy code</button></div>
+          <pre><code id="code-example"></code></pre>
+        </div>
+        <div class="integration-preview">
+          <span class="integration-caption">LIVE COMPONENT PREVIEW</span>
+          <canvas id="integration-orb" width="152" height="152" role="img" aria-label="Selected orb example"></canvas>
+          <div class="selected-label" id="integration-label">WORKING</div>
+          <p>Color, speed, pause and theme controls are connected to the same live scene.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="container footer-inner">
+    <div><span class="brand-icon small"><svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><ellipse cx="20" cy="20" rx="15" ry="6.5" transform="rotate(-36 20 20)" stroke="currentColor" stroke-width="1.8"/><circle cx="32" cy="11" r="3.5" fill="currentColor"/></svg></span><strong>FireXCore / Agent Orbs</strong><span class="foot-muted">© 2026 FireXCore</span></div>
+    <div class="footer-links"><a href="https://github.com/FireXCore/agent-orbs">GitHub</a><a href="#top">Back to top ↑</a></div>
+  </div></footer>
+  <script type="module" src="./preview.js"></script>
+</body>
+</html>
