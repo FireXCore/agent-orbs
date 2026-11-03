@@ -177,7 +177,7 @@ Make the selected `state` reflect an actual action: for example, only display `l
 ## Releases
 
 - **Latest release:** [v0.1.0](https://github.com/FireXCore/agent-orbs/releases/tag/v0.2.0)
-- **Downloadable distributable:** [firexcore-agent-orbs-0.2.0.tgz](https://github.com/FireXCore/agent-orbs/releases/download/v0.1.0/firexcore-agent-orbs-0.2.0.tgz)
+- **Downloadable distributable:** [firexcore-agent-orbs-0.2.0.tgz](https://github.com/FireXCore/agent-orbs/releases/download/v0.2.0/firexcore-agent-orbs-0.2.0.tgz)
 - **Changelog:** [CHANGELOG.md](CHANGELOG.md)
 - **Interactive demo:** [agent-orbs-demo.vercel.app](https://agent-orbs-demo.vercel.app/)
 
