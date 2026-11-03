@@ -68,13 +68,21 @@ jobs:
       - name: Confirm public registry metadata
         run: |
           set -euo pipefail
-          for attempt in 1 2 3 4 5; do
-            if npm view '@firexcore/agent-orbs@0.2.0' version --registry=https://registry.npmjs.org/ 2>/dev/null | grep -Fxq '0.2.0'; then
-              npm view '@firexcore/agent-orbs@0.2.0' dist.tarball repository.url --registry=https://registry.npmjs.org/
-              echo 'PUBLIC_NPMJS_VERIFIED'
+          url='https://registry.npmjs.org/%40firexcore%2Fagent-orbs/0.2.0'
+          # npm may return success while its public metadata is still processing.
+          for attempt in $(seq 1 36); do
+            http="$(curl --silent --show-error --location --max-time 12 --output /tmp/agent-orbs-public.json --write-out '%{http_code}' "$url" || true)"
+            if [[ "$http" == '200' ]] && node - <<'NODE'
+          const p=require('/tmp/agent-orbs-public.json');
+          const repo=typeof p.repository==='string'?p.repository:p.repository?.url||'';
+          if(p.name!=='@firexcore/agent-orbs'||p.version!=='0.2.0'||!p.dist?.tarball?.startsWith('https://registry.npmjs.org/')||!repo.includes('github.com/FireXCore/agent-orbs'))process.exit(1);
+          console.log('PUBLIC_NPMJS_VERIFIED',p.name,p.version,p.dist.tarball);
+          NODE
+            then
               exit 0
             fi
-            sleep 3
+            echo "Public registry processing: HTTP $http, attempt $attempt / 36"
+            sleep 10
           done
-          echo 'Registry verification failed' >&2
+          echo 'Public npm registry metadata did not become available' >&2
           exit 1

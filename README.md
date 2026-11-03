@@ -176,21 +176,27 @@ Make the selected `state` reflect an actual action: for example, only display `l
 
 ## Releases
 
-- **Latest release:** [v0.1.0](https://github.com/FireXCore/agent-orbs/releases/tag/v0.2.0)
+- **Latest release:** [v0.2.0](https://github.com/FireXCore/agent-orbs/releases/tag/v0.2.0)
 - **Downloadable distributable:** [firexcore-agent-orbs-0.2.0.tgz](https://github.com/FireXCore/agent-orbs/releases/download/v0.2.0/firexcore-agent-orbs-0.2.0.tgz)
 - **Changelog:** [CHANGELOG.md](CHANGELOG.md)
 - **Interactive demo:** [agent-orbs-demo.vercel.app](https://agent-orbs-demo.vercel.app/)
 
-The v0.2.0 tarball is attached to the GitHub Release. The library is published as **`@firexcore/agent-orbs@0.2.0`** on the [GitHub Packages npm registry](https://npm.pkg.github.com/) (not npmjs.org). GitHub Packages requires authenticated npm access; visibility is controlled in the GitHub Packages settings. The npmjs.org registry is a separate publication channel.
-
-To install with GitHub Packages authorization already configured (a GitHub token with package read permission may be required):
+**Public npmjs.org:** [@firexcore/agent-orbs@0.2.0](https://www.npmjs.com/package/@firexcore/agent-orbs) — confirmed in the public npm registry. Install without any GitHub Packages authentication:
 
 ```bash
-npm config set @firexcore:registry https://npm.pkg.github.com
 npm install @firexcore/agent-orbs@0.2.0
 ```
 
-See [GitHub's npm registry authentication guide](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry).
+If you previously configured `@firexcore` to use GitHub Packages, remove the old registry override before installing from npmjs.org:
+
+```bash
+npm config delete @firexcore:registry
+npm install @firexcore/agent-orbs@0.2.0 --registry=https://registry.npmjs.org/
+```
+
+The GitHub release [v0.2.0](https://github.com/FireXCore/agent-orbs/releases/tag/v0.2.0) also provides the downloadable `.tgz`. The same version remains available separately through GitHub Packages for authenticated users.
+
+**Provenance note:** The initial public npmjs release was published without Sigstore provenance because duplicate transparency-log entry `TLOG_CREATE_ENTRY_ERROR (409)` blocked earlier publish attempts. Future releases should restore provenance using npm Trusted Publishing (OIDC) after resolving the upstream signing issue. CI and package build tests passed, and independent public-registry metadata verification succeeded.
 
 ## Attribution
 

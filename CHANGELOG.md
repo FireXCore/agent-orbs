@@ -9,7 +9,7 @@
 - Provides pointer/touch interaction, light/dark themes, animation speed, pause and reduced-motion handling.
 - Includes the production demo, source documentation, geometry and compatibility tests.
 - Retains the upstream license and attribution in `third_party/thinking-orbs/`.
-- Publishes a GitHub Packages npm installable package and release tarball. Publishing to npmjs.org remains separate.
+- Published to **npmjs.org** as public `@firexcore/agent-orbs@0.2.0`, as well as GitHub Packages and the GitHub Release tarball. Public registry visibility verified.
 
 ## v0.1.0 — Initial public library
 
