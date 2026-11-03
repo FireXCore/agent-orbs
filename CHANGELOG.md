@@ -1,20 +1,15 @@
-## Unreleased — Mono Lattice family (source and demo)
-
-- Added named \`MonoLatticeOrb\` React wrapper for the heritage engine's authentic classic monochrome dots.
-- Added a third showcase tab, **Mono Lattice**, without creating a third renderer or replacing FireXCore originals.
-- Displayed each of the nine upstream states at native 128/96/64/32px with the original per-size density tunings, grayscale palette and matte surfaces.
-- Connected selection, pause/resume, speed, theme, pointer interaction, integration preview and cleanup.
-- Preserved upstream MIT license and attribution; maintained original and contour galleries independently.
-
-## 0.2.0 (source update; not yet published)
-
-- Preserved the original nine FireXCore motion states and existing AgentOrb API.
-- Added an opt-in, MIT-attributed nine-state thinking-orb engine with classic and contour modes.
-- Added interactive pointer/touch distortion, four sizes, idle/responding states, vanilla controller, and custom element.
-- Added the React InteractiveOrb wrapper, expanded gallery and standalone preview.
-- Added compatibility tests and retained upstream notices in third_party/thinking-orbs.
-
 # Changelog
+
+## v0.2.0 — Interactive contour and Mono Lattice package release (2026-11-03)
+
+- Preserves the nine independently authored FireXCore Canvas 2D motion states, APIs and appearance.
+- Adds the optional, MIT-attributed Schoolees / Jakub Antalik Thinking Orbs engine with nine states and classic/contour modes.
+- Adds the `InteractiveOrb` React component, imperative DOM controller and web component.
+- Adds the named `MonoLatticeOrb` family: authentic grayscale classic dots, four native 128/96/64/32px profiles with tuned density, no imposed glow.
+- Provides pointer/touch interaction, light/dark themes, animation speed, pause and reduced-motion handling.
+- Includes the production demo, source documentation, geometry and compatibility tests.
+- Retains the upstream license and attribution in `third_party/thinking-orbs/`.
+- Publishes a GitHub Packages npm installable package and release tarball. Publishing to npmjs.org remains separate.
 
 ## v0.1.0 — Initial public library
 
