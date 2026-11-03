@@ -6,12 +6,17 @@ const html=readFileSync(new URL('../preview/index.html',import.meta.url),'utf8')
 const js=readFileSync(new URL('../preview/preview.js',import.meta.url),'utf8');
 const css=readFileSync(new URL('../preview/styles.css',import.meta.url),'utf8');
 const readme=readFileSync(new URL('../README.md',import.meta.url),'utf8');
-for(const id of ['hero-orb','original-grid','contour-grid','feature-orb','integration-orb','theme','speed','pause','variant','copy-code','feature-state','pointer']){
+for(const id of ['hero-orb','original-grid','contour-grid','mono-grid','mono-intro','tab-mono','feature-orb','integration-orb','theme','speed','pause','variant','copy-code','feature-state','pointer']){
   assert(html.includes('id="'+id+'"'), 'Missing live control: '+id);
 }
 assert.equal(ORB_STATES.length,9);
 assert(js.includes("from './core/scenes.js'"),'Demo must use canonical original engine');
 assert(js.includes("from './heritage/index.js'"),'Demo must use licensed contour engine');
+assert(js.includes("function makeMonoCard"),'Mono Lattice gallery must be live');
+assert(js.includes("MONO_SIZES = [128, 96, 64, 32]"),'Native size matrix missing');
+assert(js.includes("variant:'classic'"),'Mono Lattice must use classic upstream renderer');
+assert(js.includes("monoInstances.forEach(({controller})=>controller.destroy())"),'Mono Lattice cleanup missing');
+assert(css.includes(".mono-size-cell canvas"),'Monochrome native canvas styles missing');
 assert(css.includes('@media(prefers-reduced-motion:reduce)'), 'Reduced-motion styles missing');
 assert(css.includes('@media(max-width:580px)'), 'Mobile responsive styles missing');
 assert(readme.includes('assets/showcase.svg'), 'README hero missing');

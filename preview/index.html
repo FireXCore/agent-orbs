@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#070d1b">
   <meta name="description" content="Explore FireXCore Agent Orbs: original procedural Canvas animations and an interactive contour family. Live previews, light/dark themes, variants, and integration examples.">
   <meta property="og:title" content="FireXCore / Agent Orbs — A language for systems in motion">
-  <meta property="og:description" content="18 live motion states across two engines. Explore animated, pointer-reactive agent indicators in your browser.">
+  <meta property="og:description" content="Three visual families, two Canvas engines, and nine motion states in each family: colorful original, contour, and monochrome lattice.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://raw.githubusercontent.com/FireXCore/agent-orbs/main/assets/showcase.svg">
   <meta property="og:url" content="https://agent-orbs-demo.vercel.app/">
@@ -37,7 +37,7 @@
       <div class="hero-copy">
         <div class="eyebrow"><span class="live-led"></span> PROCEDURAL MOTION SYSTEM <span class="eyebrow-line"></span> V0.2</div>
         <h1 id="hero-title">A language for<br><span class="gradient-word">systems in motion.</span></h1>
-        <p class="hero-subtitle">Meaningful, real-time visual feedback for AI agents and operational interfaces. Original procedural geometry meets an optional pointer-reactive contour family.</p>
+        <p class="hero-subtitle">Meaningful, real-time visual feedback for AI agents and operational interfaces. Original procedural geometry, contour animations, and a faithful monochrome lattice family with purpose-tuned 32–128px variants.</p>
         <div class="hero-actions">
           <a class="primary-link" href="#gallery">Explore live gallery <span aria-hidden="true">↗</span></a>
           <a class="secondary-link" href="https://github.com/FireXCore/agent-orbs" target="_blank" rel="noopener noreferrer">View source <span aria-hidden="true">↗</span></a>
@@ -47,7 +47,7 @@
           <span class="metric-divider"></span>
           <div><b>09</b><span>CONTOUR STATES</span></div>
           <span class="metric-divider"></span>
-          <div><b>02</b><span>RENDER FAMILIES</span></div>
+          <div><b>03</b><span>VISUAL FAMILIES</span></div>
         </div>
       </div>
       <div class="hero-stage">
@@ -82,6 +82,7 @@
             <div class="segments">
               <button id="tab-original" class="seg active" aria-pressed="true" type="button">Original</button>
               <button id="tab-contour" class="seg" aria-pressed="false" type="button">Contour family</button>
+              <button id="tab-mono" class="seg" aria-pressed="false" type="button">Mono Lattice</button>
             </div>
           </div>
           <label class="control-set"><span class="control-label">THEME</span><select id="theme" aria-label="Theme"><option value="dark">Dark</option><option value="light">Light</option></select></label>
@@ -94,6 +95,12 @@
       <div class="gallery-heading"><span id="gallery-heading">ORIGINAL CANVAS ENGINE</span><span id="gallery-count">09 STATES · 01 FAMILY</span></div>
       <div class="gallery-grid" id="original-grid"></div>
       <div class="gallery-grid" id="contour-grid" hidden></div>
+      <div id="mono-intro" class="mono-intro" hidden>
+        <div><span class="section-kicker">MONOCHROME / NATIVE SIZE LAB</span><h3>Mono Lattice <span>— faithful halftone motion.</span></h3>
+          <p>Separate from the luminous FireXCore engine. Real upstream classic dot geometry, grayscale shading, zero bloom, and individually tuned 128, 96, 64, and 32px canvases. Hover or drag directly on any orb.</p></div>
+        <span class="mono-caption">09 STATES / 04 NATIVE SIZES</span>
+      </div>
+      <div class="gallery-grid mono-grid" id="mono-grid" hidden></div>
       <p class="gallery-note" id="gallery-note">Original FireXCore engine. Nine independently authored mathematical scenes. No WebGL, videos, GIFs or third-party render libraries.</p>
     </section>
 

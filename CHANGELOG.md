@@ -1,3 +1,11 @@
+## Unreleased — Mono Lattice family (source and demo)
+
+- Added named \`MonoLatticeOrb\` React wrapper for the heritage engine's authentic classic monochrome dots.
+- Added a third showcase tab, **Mono Lattice**, without creating a third renderer or replacing FireXCore originals.
+- Displayed each of the nine upstream states at native 128/96/64/32px with the original per-size density tunings, grayscale palette and matte surfaces.
+- Connected selection, pause/resume, speed, theme, pointer interaction, integration preview and cleanup.
+- Preserved upstream MIT license and attribution; maintained original and contour galleries independently.
+
 ## 0.2.0 (source update; not yet published)
 
 - Preserved the original nine FireXCore motion states and existing AgentOrb API.
