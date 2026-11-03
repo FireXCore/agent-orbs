@@ -1,11 +1,11 @@
 # FireXCore Agent Orbs
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-121212?logo=vercel)](https://agent-orbs-demo.vercel.app/) [![MIT License](https://img.shields.io/badge/License-MIT-blue)](LICENSE) [![Release v0.1.0](https://img.shields.io/badge/Release-v0.1.0-0a7)](https://github.com/FireXCore/agent-orbs/releases/tag/v0.1.0) [![CI](https://github.com/FireXCore/agent-orbs/actions/workflows/ci.yml/badge.svg)](https://github.com/FireXCore/agent-orbs/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-121212?logo=vercel)](https://agent-orbs-demo.vercel.app/) [![MIT License](https://img.shields.io/badge/License-MIT-blue)](LICENSE) [![Release v0.2.0](https://img.shields.io/badge/Release-v0.2.0-0a7)](https://github.com/FireXCore/agent-orbs/releases/tag/v0.2.0) [![CI](https://github.com/FireXCore/agent-orbs/actions/workflows/ci.yml/badge.svg)](https://github.com/FireXCore/agent-orbs/actions/workflows/ci.yml)
 
-**[Interactive live demo](https://agent-orbs-demo.vercel.app/)** · [Release v0.1.0](https://github.com/FireXCore/agent-orbs/releases/tag/v0.1.0) · [Source repository](https://github.com/FireXCore/agent-orbs) · [Changelog](CHANGELOG.md)
+**[Interactive live demo](https://agent-orbs-demo.vercel.app/)** · [Release v0.2.0](https://github.com/FireXCore/agent-orbs/releases/tag/v0.2.0) · [Source repository](https://github.com/FireXCore/agent-orbs) · [Changelog](CHANGELOG.md)
 
 
-FireXCore provides nine independently authored procedural orb states for React + TypeScript. Version 0.2 additionally includes an **optional, MIT-licensed adaptation** of the Schoolees thinking-orbs engine with a separate renderer. The original nine-state implementation remains independent and unchanged.
+FireXCore provides nine independently authored procedural orb states for React + TypeScript. Version 0.2 additionally includes an **optional, MIT-licensed adaptation** of the Schoolees thinking-orbs engine with a separate renderer. The original nine-state implementation remains independent and unchanged. The named `MonoLatticeOrb` component uses the heritage engine's original grayscale classic renderer.
 
 <p align="center">
   <a href="https://agent-orbs-demo.vercel.app/">
@@ -31,7 +31,7 @@ FireXCore provides nine independently authored procedural orb states for React +
 
 The GIF is rendered from the original `buildScene` implementation, not a marketing simulation: `node scripts/render-motion-frames.mjs` generates scene frames; a GitHub workflow encodes them with FFmpeg. The above SVG is an illustrative vector overview; the site contains real-time Canvas previews.
 
-**Live controls:** original/contour engines, dark/light theme, 0.5–2× speed, classic/contour treatment, pause/resume, pointer distortion and copyable integration snippets.
+**Live controls:** Original, Contour and Mono Lattice visual families across two engines, dark/light theme, 0.5–2× speed, classic/contour treatment, pause/resume, pointer distortion and copyable integration snippets.
 
 <details>
 <summary>View the compact original nine-state contact sheet</summary>
@@ -52,7 +52,7 @@ The GIF is rendered from the original `buildScene` implementation, not a marketi
 - Accessible `AgentOrbLabel` combines a compact animation with `role="status"` text.
 - React 18+ peer dependency, SSR-compatible static import, ESM/CJS/types build, strict TypeScript.
 
-## Optional contour and interactive family (v0.2 source)
+## Contour and interactive family (v0.2.0)
 
 This opt-in engine adds features absent from the original FireXCore engine: `idle` and `responding` states, `classic` and `contour` modes for nine states, native `32/64/96/128px` presets, pointer/touch distortion with spring-back, an imperative DOM controller and a `<thinking-orb>` custom element. The original `AgentOrb` API and animation states are preserved.
 
@@ -74,7 +74,7 @@ orb.destroy();
 
 For a framework-free custom element, import `@firexcore/agent-orbs/register` once in a browser entrypoint, then use `<thinking-orb state="idle" variant="contour" size="64" interactive></thinking-orb>`.
 
-**Attribution:** The optional implementation is adapted from [Schoolees/thinking-orbs](https://github.com/Schoolees/thinking-orbs), itself adapted from [Jakub Antalik's thinking-orbs](https://github.com/Jakubantalik/thinking-orbs). Copyright and MIT license are retained at `third_party/thinking-orbs/LICENSE` and `third_party/thinking-orbs/NOTICE.md`. These upstream animations are not presented as FireXCore-original geometry. The v0.1.0 release/package does not include this new family until a new package release is published.
+**Attribution:** The optional implementation is adapted from [Schoolees/thinking-orbs](https://github.com/Schoolees/thinking-orbs), itself adapted from [Jakub Antalik's thinking-orbs](https://github.com/Jakubantalik/thinking-orbs). Copyright and MIT license are retained at `third_party/thinking-orbs/LICENSE` and `third_party/thinking-orbs/NOTICE.md`. These upstream animations are not presented as FireXCore-original geometry. Version 0.2.0 includes this opt-in family and preserves upstream MIT attribution.
 
 ## Showcase assets
 
@@ -93,9 +93,9 @@ The visual gallery has **three separately named families** across **two renderin
 | **Contour family** | MIT-licensed Schoolees/Jakub Antalik heritage engine | Lines/contours and pointer-reactive variants |
 | **Mono Lattice** | Same MIT-licensed heritage engine, *classic* mode | Neutral grayscale halftone dots, no glow, native density presets |
 
-**Mono Lattice** intentionally reproduces the upstream [Thinking Orbs monochrome gallery](https://schoolees.github.io/thinking-orbs/): all nine states at **128, 96, 64 and 32px**, each rendered natively, not resized from a single large orb. It uses the upstream \`variant="classic"\`, \`resolvePreset(state, size)\`, and \`ThinkingOrb\` controller already retained in the repository. This is not a third independent engine and its mathematics are not claimed as original FireXCore work.
+**Mono Lattice** intentionally reproduces the upstream [Thinking Orbs monochrome gallery](https://schoolees.github.io/thinking-orbs/): all nine states at **128, 96, 64 and 32px**, each rendered natively, not resized from a single large orb. It uses the upstream `variant="classic"`, `resolvePreset(state, size)`, and `ThinkingOrb` controller already retained in the repository. This is not a third independent engine and its mathematics are not claimed as original FireXCore work.
 
-\`\`\`tsx
+```tsx
 import { MonoLatticeOrb } from '@firexcore/agent-orbs';
 
 // Distinct, named component: always renders the classic monochrome dots.
@@ -103,7 +103,7 @@ import { MonoLatticeOrb } from '@firexcore/agent-orbs';
 <MonoLatticeOrb state="listening" size={96} theme="dark" interactive />
 <MonoLatticeOrb state="listening" size={64} theme="dark" interactive />
 <MonoLatticeOrb state="listening" size={32} theme="dark" interactive />
-\`\`\`
+```
 
 The four-size showcase is available in the [Mono Lattice gallery tab](https://agent-orbs-demo.vercel.app/#gallery). The original FireXCore orbs and the interactive contour gallery remain available as separate tabs. License and origin notices: [third_party/thinking-orbs/LICENSE](third_party/thinking-orbs/LICENSE) and [third_party/thinking-orbs/NOTICE.md](third_party/thinking-orbs/NOTICE.md).
 
@@ -132,7 +132,7 @@ Open http://127.0.0.1:5174/preview/. The preview is generated from the exact sam
 
 ## Use in RMS (or any React application)
 
-After publishing to npm, install `@firexcore/agent-orbs`. Until publishing, install locally:
+To install from GitHub Packages after configuring authenticated access, use `@firexcore/agent-orbs@0.2.0`. For local development, install from a sibling folder:
 
 ```bash
 npm install ../agent-orbs
@@ -176,18 +176,18 @@ Make the selected `state` reflect an actual action: for example, only display `l
 
 ## Releases
 
-- **Latest release:** [v0.1.0](https://github.com/FireXCore/agent-orbs/releases/tag/v0.1.0)
-- **Downloadable distributable:** [firexcore-agent-orbs-0.1.0.tgz](https://github.com/FireXCore/agent-orbs/releases/download/v0.1.0/firexcore-agent-orbs-0.1.0.tgz)
+- **Latest release:** [v0.1.0](https://github.com/FireXCore/agent-orbs/releases/tag/v0.2.0)
+- **Downloadable distributable:** [firexcore-agent-orbs-0.2.0.tgz](https://github.com/FireXCore/agent-orbs/releases/download/v0.1.0/firexcore-agent-orbs-0.2.0.tgz)
 - **Changelog:** [CHANGELOG.md](CHANGELOG.md)
 - **Interactive demo:** [agent-orbs-demo.vercel.app](https://agent-orbs-demo.vercel.app/)
 
-The tarball is attached to the GitHub Release. The library is also published as **`@firexcore/agent-orbs@0.1.0`** on the [GitHub Packages npm registry](https://npm.pkg.github.com/) (not npmjs.org). GitHub Packages requires authenticated npm access; new packages default to private visibility until changed in GitHub package settings.
+The v0.2.0 tarball is attached to the GitHub Release. The library is published as **`@firexcore/agent-orbs@0.2.0`** on the [GitHub Packages npm registry](https://npm.pkg.github.com/) (not npmjs.org). GitHub Packages requires authenticated npm access; visibility is controlled in the GitHub Packages settings. The npmjs.org registry is a separate publication channel.
 
-To install with GitHub Packages authorization already configured:
+To install with GitHub Packages authorization already configured (a GitHub token with package read permission may be required):
 
 ```bash
 npm config set @firexcore:registry https://npm.pkg.github.com
-npm install @firexcore/agent-orbs@0.1.0
+npm install @firexcore/agent-orbs@0.2.0
 ```
 
 See [GitHub's npm registry authentication guide](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry).

@@ -1,0 +1,88 @@
+name: Publish Agent Orbs v0.2.0 — GitHub Packages and Release
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-v0.2.0.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+concurrency:
+  group: publish-agent-orbs-v0.2.0
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Configure GitHub npm registry
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@firexcore'
+      - name: Verify intended package version
+        run: node -e "const p=require('./package.json'); if(p.name!=='@firexcore/agent-orbs'||p.version!=='0.2.0') process.exit(1)"
+      - name: Install dependencies and run acceptance suite
+        run: |
+          npm install
+          npm run check
+      - name: Smoke-test built library exports
+        run: |
+          node --input-type=module -e "const m=await import('./dist/index.js'); for(const x of ['AgentOrb','InteractiveOrb','MonoLatticeOrb','ThinkingOrb']) if(typeof m[x]!=='function') throw Error('Missing export: '+x); console.log('ESM exports OK')"
+          node -e "const m=require('./dist/index.cjs'); for(const x of ['AgentOrb','InteractiveOrb','MonoLatticeOrb','ThinkingOrb']) if(typeof m[x]!=='function') throw Error('Missing export: '+x); console.log('CJS exports OK')"
+          test -f dist/index.d.ts
+          test -f dist/register.js
+          test -f dist/register.d.ts
+          test -f third_party/thinking-orbs/LICENSE
+          test -f third_party/thinking-orbs/NOTICE.md
+      - name: Pack installable tarball
+        run: |
+          mkdir -p release-assets
+          npm pack --pack-destination release-assets
+          tar -tzf release-assets/*.tgz | grep -q 'package/dist/index.js'
+          tar -tzf release-assets/*.tgz | grep -q 'package/dist/index.d.ts'
+          tar -tzf release-assets/*.tgz | grep -q 'package/third_party/thinking-orbs/LICENSE'
+          tar -tzf release-assets/*.tgz | grep -q 'package/third_party/thinking-orbs/NOTICE.md'
+      - name: Publish npm package version to GitHub Packages
+        env:
+          NODE_AUTH_TOKEN: ${{ github.token }}
+        run: |
+          if npm view @firexcore/agent-orbs@0.2.0 version --registry=https://npm.pkg.github.com >/dev/null 2>&1; then
+            echo "Package @firexcore/agent-orbs@0.2.0 already exists in GitHub Packages"
+          else
+            npm publish --registry=https://npm.pkg.github.com
+          fi
+          test "$(npm view @firexcore/agent-orbs@0.2.0 version --registry=https://npm.pkg.github.com)" = '0.2.0'
+      - name: Publish distributable GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view v0.2.0 >/dev/null 2>&1; then
+            echo 'GitHub Release v0.2.0 already exists'
+            exit 0
+          fi
+          cat > release-assets/RELEASE_NOTES.md <<'NOTES'
+          FireXCore Agent Orbs v0.2.0 — installable GitHub Packages release.
+
+          Includes nine original FireXCore states; opt-in nine-state classic and interactive contour family; MonoLatticeOrb for faithful monochrome dots at native 32, 64, 96 and 128px; React, vanilla DOM controller, and web component.
+
+          Original FireXCore implementation is unchanged. The optional heritage engine is adapted under MIT from Schoolees/thinking-orbs and Jakub Antalik. See third_party/thinking-orbs/LICENSE and NOTICE.md.
+
+          Registry: https://npm.pkg.github.com/ (not npmjs.org).
+          Configure: npm config set @firexcore:registry https://npm.pkg.github.com
+          Install: npm install @firexcore/agent-orbs@0.2.0
+          Demo: https://agent-orbs-demo.vercel.app/
+          NOTES
+          gh release create v0.2.0 release-assets/*.tgz \
+            --target "$GITHUB_SHA" \
+            --title "FireXCore Agent Orbs v0.2.0" \
+            --notes-file release-assets/RELEASE_NOTES.md \
+            --latest
