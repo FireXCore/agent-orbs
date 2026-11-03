@@ -5,7 +5,7 @@
 **[Interactive live demo](https://agent-orbs-demo.vercel.app/)** · [Release v0.1.0](https://github.com/FireXCore/agent-orbs/releases/tag/v0.1.0) · [Source repository](https://github.com/FireXCore/agent-orbs) · [Changelog](CHANGELOG.md)
 
 
-Nine independent, procedurally generated orbital status indicators for React + TypeScript. **This is a new codebase**, with its own mathematical geometry, renderer, animation scheduler, React API, tests, demo, and MIT license. It does not import or depend on ThinkingOrbs or thinking-orbs.
+FireXCore provides nine independently authored procedural orb states for React + TypeScript. Version 0.2 additionally includes an **optional, MIT-licensed adaptation** of the Schoolees thinking-orbs engine with a separate renderer. The original nine-state implementation remains independent and unchanged.
 
 ![Nine original procedural animation states](assets/gallery.svg)
 
@@ -22,6 +22,30 @@ Nine independent, procedurally generated orbital status indicators for React + T
 - Optional monochrome ink and accent color, speed and pause controls.
 - Accessible `AgentOrbLabel` combines a compact animation with `role="status"` text.
 - React 18+ peer dependency, SSR-compatible static import, ESM/CJS/types build, strict TypeScript.
+
+## Optional contour and interactive family (v0.2 source)
+
+This opt-in engine adds features absent from the original FireXCore engine: `idle` and `responding` states, `classic` and `contour` modes for nine states, native `32/64/96/128px` presets, pointer/touch distortion with spring-back, an imperative DOM controller and a `<thinking-orb>` custom element. The original `AgentOrb` API and animation states are preserved.
+
+```tsx
+import { InteractiveOrb } from '@firexcore/agent-orbs';
+
+<InteractiveOrb state="responding" variant="contour" size={96} interactive />
+<InteractiveOrb state="idle" variant="classic" size={32} paused />
+```
+
+```ts
+import { createThinkingOrb } from '@firexcore/agent-orbs';
+const orb = createThinkingOrb('#status', { state: 'idle', variant: 'contour', interactive: true });
+orb.setState('responding');
+orb.pause();
+orb.resume();
+orb.destroy();
+```
+
+For a framework-free custom element, import `@firexcore/agent-orbs/register` once in a browser entrypoint, then use `<thinking-orb state="idle" variant="contour" size="64" interactive></thinking-orb>`.
+
+**Attribution:** The optional implementation is adapted from [Schoolees/thinking-orbs](https://github.com/Schoolees/thinking-orbs), itself adapted from [Jakub Antalik's thinking-orbs](https://github.com/Jakubantalik/thinking-orbs). Copyright and MIT license are retained at `third_party/thinking-orbs/LICENSE` and `third_party/thinking-orbs/NOTICE.md`. These upstream animations are not presented as FireXCore-original geometry. The v0.1.0 release/package does not include this new family until a new package release is published.
 
 ## Run locally
 
