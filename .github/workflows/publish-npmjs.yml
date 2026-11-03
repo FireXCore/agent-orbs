@@ -28,7 +28,6 @@ jobs:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org/'
           scope: '@firexcore'
-          package-manager-cache: false
       - name: Confirm npm and package versions
         run: |
           node --version
@@ -47,8 +46,12 @@ jobs:
           npm pack --dry-run --json > /tmp/agent-orbs-npm-pack.json
           node -e "const p=require('/tmp/agent-orbs-npm-pack.json')[0];for(const f of ['dist/index.js','dist/index.d.ts','third_party/thinking-orbs/LICENSE','third_party/thinking-orbs/NOTICE.md']) if(!p.files.some(x=>x.path===f)) throw Error('Missing '+f)"
       - name: Publish public package v0.2.0 on npmjs.org
+        # Temporary workaround for Sigstore Rekor TLOG_CREATE_ENTRY_ERROR (409):
+        # the equivalent provenance entry already exists but package publish failed.
+        # Keep registry verification; re-enable provenance for a future release.
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: 'false'
         run: |
           set -euo pipefail
           if npm view '@firexcore/agent-orbs@0.2.0' version --registry=https://registry.npmjs.org/ >/dev/null 2>&1; then
@@ -60,7 +63,7 @@ jobs:
               echo 'No NPM_TOKEN secret: attempting npm trusted publishing via GitHub OIDC'
               echo 'This requires a configured npmjs.org Trusted Publisher for FireXCore/agent-orbs and publish-npmjs.yml.'
             fi
-            npm publish --access public --registry=https://registry.npmjs.org/ --provenance
+            npm publish --access public --registry=https://registry.npmjs.org/
           fi
       - name: Confirm public registry metadata
         run: |
