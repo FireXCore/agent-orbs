@@ -1,123 +1,228 @@
 import { buildScene } from './core/scenes.js';
 import { paint } from './core/render.js';
 import { ORB_STATES } from './core/core-types.js';
+import { ThinkingOrb, ORB_STATES as CONTOUR_STATES } from './heritage/index.js';
 
-const desc = {
-  working: 'Four precessing tracks with orbital wake highlights',
-  searching: 'Geodetic points reveal a traveling scan',
-  solving: 'Particle lattice disperses and reconstructs',
-  listening: 'Pressure waves cross concentric rings',
-  connecting: 'A 3D graph activates its connections',
-  weaving: 'Three spiral threads wrap a volume',
-  composing: 'Layered ribbons undulate in sequence',
-  breathing: 'A soft toroidal halo expands and contracts',
-  shaping: 'Geometric outlines transition continuously'
+const $ = id => document.getElementById(id);
+const descriptions = {
+  working: 'Precessing orbital tracks in continuous motion',
+  searching: 'A geodetic globe illuminated by a traveling scan',
+  solving: 'A dispersed particle lattice finds its structure',
+  listening: 'Pressure waves across a spherical lattice',
+  connecting: 'Live links form between spatial nodes',
+  weaving: 'Three threads spiral through perspective',
+  composing: 'Layered ribbons flow like evolving ideas',
+  breathing: 'A quiet toroidal halo gently expands',
+  shaping: 'Fluid transition across geometric contours',
+  idle: 'Ready for the next interaction',
+  responding: 'Streaming an answer and revealing structure'
 };
-const phrases = {
-  working:'Processing request', searching:'Searching suppliers', solving:'Validating results',
-  listening:'Listening to input', connecting:'Connecting to API', weaving:'Planning next steps',
-  composing:'Composing draft', breathing:'Waiting for response', shaping:'Building preview'
+const messages = {
+  working:'PROCESSING',searching:'SEARCHING',solving:'ANALYZING',
+  listening:'LISTENING',connecting:'CONNECTING',weaving:'PLANNING',
+  composing:'COMPOSING',breathing:'WAITING',shaping:'SHAPING',
+  idle:'READY',responding:'RESPONDING'
 };
-const root = document.getElementById('app');
-const grid = document.getElementById('grid');
-const feature = document.getElementById('feature');
-const instances = [];
-let light = false, paused = false, accent = false, speed = 1, selected = 'searching';
-let reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
-window.matchMedia?.('(prefers-reduced-motion: reduce)').addEventListener?.('change', e => reduced = e.matches);
-function add(canvas, state, diameter, compact){
-  const dpr = Math.min(2,window.devicePixelRatio||1);
-  canvas.width = Math.round(diameter*dpr);canvas.height = Math.round(diameter*dpr);
-  canvas.style.width=diameter+'px';canvas.style.height=diameter+'px';
-  instances.push({canvas,state,diameter,compact,dpr,visible:true});
-}
-for(const [i,state] of ORB_STATES.entries()) {
-  const card=document.createElement('button');card.type='button';card.className='card'+(state===selected?' selected':'');card.dataset.state=state;
-  card.innerHTML=`<div class="stage"><canvas class="big" aria-hidden="true"></canvas><canvas class="small" aria-hidden="true"></canvas></div><div class="meta"><small>${String(i+1).padStart(2,'0')}</small><div><b>${state}</b><p>${desc[state]}</p></div></div>`;
-  const big=card.querySelector('.big'), small=card.querySelector('.small');
-  add(big,state,76,false);add(small,state,24,true);
-  card.addEventListener('click',()=>{selected=state;document.getElementById('status').textContent=phrases[state];document.querySelectorAll('.card').forEach(x=>x.classList.toggle('selected',x.dataset.state===state));draw(performance.now()/1000);});
-  grid.appendChild(card);
-}
-add(feature,selected,112,false);
-const io=new IntersectionObserver(entries=>entries.forEach(e=>{const inst=instances.find(x=>x.canvas===e.target);if(inst)inst.visible=e.isIntersecting;}));
-instances.forEach(i=>io.observe(i.canvas));
-function draw(t){
-  const ink=light?'#202c3b':'#eef4ff';
-  for(const i of instances){
-    if(!i.visible)continue;
-    if(i.canvas===feature)i.state=selected;
-    const ctx=i.canvas.getContext('2d');if(!ctx)continue;
-    ctx.setTransform(i.dpr,0,0,i.dpr,0,0);
-    paint(ctx, buildScene(i.state,reduced?0.7:t*speed,i.compact),{diameter:i.diameter,ink,accent:accent?'#55b3ff':ink});
-  }
-}
-let frozenTime=0;
-function animate(ms){ if(!paused&&!reduced)frozenTime=ms/1000; if(!document.hidden)draw(frozenTime);requestAnimationFrame(animate);}
-requestAnimationFrame(animate);
-const themeButton=document.getElementById('theme');themeButton.onclick=()=>{light=!light;root.classList.toggle('light',light);themeButton.textContent=light?'Dark mode':'Light mode';draw(frozenTime);};
-const pauseButton=document.getElementById('pause');pauseButton.onclick=()=>{paused=!paused;pauseButton.textContent=paused?'Play motion':'Pause motion';};
-const accentButton=document.getElementById('accent');accentButton.onclick=()=>{accent=!accent;accentButton.textContent=accent?'Monochrome':'Accent color';draw(frozenTime);};
-const speedButton=document.getElementById('speed');speedButton.onclick=()=>{speed=speed===1?1.5:speed===1.5?2:speed===2?0.5:1;speedButton.textContent=`Speed ${speed}×`;};
+const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+let reduced = reducedQuery.matches;
+let mode = 'original', light = false, paused = false, speed = 1;
+let selectedOriginal = 'working', selectedContour = 'responding', variant = 'contour';
+let featureState = 'responding', pointerEnabled = true;
+let clock = 0, previous = 0;
+const originalInstances = [];
+const contourInstances = [];
+let featureInstance = null;
+let integrationContour = null;
 
-/** MIT-licensed optional family: Schoolees/thinking-orbs; see third_party/thinking-orbs/NOTICE.md. */
-import { ThinkingOrb, ORB_STATES as INTERACTIVE_STATES } from './heritage/index.js';
+function originalInstance(canvas, state, size, options={}) {
+  const dpr = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+  canvas.width = Math.round(size*dpr); canvas.height = Math.round(size*dpr);
+  canvas.style.width = size+'px'; canvas.style.height = size+'px';
+  const instance = {canvas, state, size, dpr, fixedDark: !!options.fixedDark, visible:true, ctx:canvas.getContext('2d')};
+  originalInstances.push(instance);
+  return instance;
+}
+const hero = originalInstance($('hero-orb'), selectedOriginal, 248, {fixedDark:true});
+const integration = originalInstance($('integration-orb'), selectedOriginal, 152);
+const intersection = typeof IntersectionObserver === 'undefined' ? null :
+  new IntersectionObserver(entries => entries.forEach(entry => {
+    const item = originalInstances.find(instance => instance.canvas === entry.target);
+    if(item)item.visible = entry.isIntersecting;
+  }),{rootMargin:'50px'});
+function watch(instance){intersection?.observe(instance.canvas);}
 
-const heritageSection = document.createElement('section');
-heritageSection.className = 'heritage';
-heritageSection.innerHTML = `<div class="header"><span>03 / INTERACTIVE CONTOUR FAMILY</span><span>9 STATES / TWO STYLES / FOUR SIZES</span></div>
-  <p class="heritage-intro">A separately licensed, optional contour and dot family. Hover or drag to deform an orb. The original FireXCore geometry above remains unchanged.</p>
-  <div class="heritage-tools">
-    <button type="button" id="heritage-variant">Style: Contour</button>
-    <button type="button" id="heritage-pointer">Pointer: On</button>
-    <button type="button" id="heritage-size">Size: 96px</button>
-  </div>
-  <div class="grid" id="heritage-grid"></div>
-  <p class="heritage-credit">MIT adaptation of <a href="https://github.com/Schoolees/thinking-orbs" target="_blank" rel="noopener noreferrer">Schoolees/thinking-orbs</a>, derived from Jakub Antalik's work.</p>`;
-root.insertBefore(heritageSection, root.querySelector('footer'));
-const heritageGrid = document.getElementById('heritage-grid');
-const heritageOrbs = [];
-let heritageVariant = 'contour', heritagePointer = true, heritageSize = 96;
-for (const [i, state] of INTERACTIVE_STATES.entries()) {
-  const card = document.createElement('article');
-  card.className = 'card';
-  card.innerHTML = `<div class="stage"><canvas class="heritage-main" aria-hidden="true"></canvas><canvas class="heritage-tiny" aria-hidden="true"></canvas></div><div class="meta"><small>${String(i + 1).padStart(2,'0')}</small><div><b>${state}</b><p>${state==='idle' ? 'Ready for input' : state==='responding' ? 'Streaming response' : 'Classic particles or motion-matched contours'}</p></div></div>`;
-  heritageGrid.appendChild(card);
-  const main = card.querySelector('.heritage-main');
-  const tiny = card.querySelector('.heritage-tiny');
-  main.style.maxWidth = '128px';
-  main.style.maxHeight = '128px';
-  tiny.style.position = 'absolute';
-  tiny.style.top = '14px';
-  tiny.style.right = '14px';
-  tiny.style.opacity = '0.85';
-  heritageOrbs.push({
-    state, main: new ThinkingOrb(main, { state, size: heritageSize, variant: heritageVariant, interactive: heritagePointer, theme: light ? 'light' : 'dark', paused, speed }),
-    tiny: new ThinkingOrb(tiny, { state, size: 32, variant: heritageVariant, theme: light ? 'light' : 'dark', paused, speed })
+function makeOriginalCard(state,index) {
+  const card = document.createElement('button');
+  card.type='button';card.className='orb-card';
+  card.dataset.state=state;
+  card.setAttribute('aria-pressed',String(state===selectedOriginal));
+  card.innerHTML = '<div class="orb-art"><span class="card-index">'+String(index+1).padStart(2,'0')+' / 09</span>'+
+    '<span class="card-mark">ORIGINAL</span><canvas aria-hidden="true"></canvas></div>'+
+    '<div class="orb-meta"><div><h3>'+state+'</h3><p>'+descriptions[state]+'</p></div><span class="chevron" aria-hidden="true">↗</span></div>';
+  const orb = originalInstance(card.querySelector('canvas'),state,156);
+  watch(orb);
+  card.addEventListener('click',()=>{
+    selectedOriginal=state;hero.state=state;
+    $('hero-status').textContent=messages[state];
+    hero.canvas.setAttribute('aria-label','Live animated '+state+' orb');
+    document.querySelectorAll('#original-grid .orb-card').forEach(el=>{
+      const active=el.dataset.state===state;
+      el.classList.toggle('active',active);el.setAttribute('aria-pressed',String(active));
+    });
+    if(mode==='original')syncIntegration();
   });
+  if(state===selectedOriginal)card.classList.add('active');
+  return card;
 }
-function syncHeritage() {
-  for (const item of heritageOrbs) {
-    item.main.update({variant:heritageVariant,interactive:heritagePointer,size:heritageSize,paused,speed,theme:light?'light':'dark'});
-    item.tiny.update({variant:heritageVariant,paused,speed,theme:light?'light':'dark'});
+ORB_STATES.forEach((state,i)=>$('original-grid').appendChild(makeOriginalCard(state,i)));
+watch(hero);watch(integration);
+
+function makeContourCard(state,index) {
+  const card=document.createElement('button');
+  card.type='button';card.className='orb-card';
+  card.dataset.state=state;
+  card.setAttribute('aria-pressed',String(state===selectedContour));
+  card.innerHTML='<div class="orb-art"><span class="card-index">'+String(index+1).padStart(2,'0')+' / 09</span>'+
+    '<span class="card-mark">INTERACTIVE</span><canvas aria-hidden="true"></canvas></div>'+
+    '<div class="orb-meta"><div><h3>'+state+'</h3><p>'+descriptions[state]+'</p></div><span class="chevron" aria-hidden="true">↗</span></div>';
+  const canvas=card.querySelector('canvas');
+  const controller=new ThinkingOrb(canvas,{state,size:128,theme:'dark',variant,interactive:true,paused,speed});
+  contourInstances.push({state,controller});
+  card.addEventListener('click',()=>{
+    selectedContour=state;
+    document.querySelectorAll('#contour-grid .orb-card').forEach(el=>{
+      const active=el.dataset.state===state;
+      el.classList.toggle('active',active);el.setAttribute('aria-pressed',String(active));
+    });
+    if(mode==='contour')syncIntegration();
+  });
+  if(state===selectedContour)card.classList.add('active');
+  return card;
+}
+CONTOUR_STATES.forEach((state,i)=>$('contour-grid').appendChild(makeContourCard(state,i)));
+
+featureInstance=new ThinkingOrb($('feature-orb'),{
+  state:featureState,size:128,theme:'dark',variant,interactive:pointerEnabled,paused,speed
+});
+
+const palettes={dark:{ink:'#94d4ff',accent:'#be9bff'},light:{ink:'#1b4775',accent:'#6c42ba'}};
+function drawOriginal(instance,time){
+  if(!instance.visible||!instance.ctx)return;
+  if(instance===integration && mode==='contour')return;
+  const palette=palettes[instance.fixedDark?'dark':light?'light':'dark'];
+  const {ctx,dpr,size,state}=instance;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.shadowBlur=0;
+  paint(ctx,buildScene(state,time,size<40),{diameter:size,ink:palette.ink,accent:palette.accent});
+}
+function frame(now) {
+  const delta=previous?Math.min(.06,(now-previous)/1000):0;
+  previous=now;
+  if(!paused&&!reduced&&!document.hidden)clock+=delta*speed;
+  if(!document.hidden)originalInstances.forEach(instance=>drawOriginal(instance,reduced?.7:clock));
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+function switchMode(next){
+  mode=next;
+  $('original-grid').hidden=next!=='original';
+  $('contour-grid').hidden=next!=='contour';
+  $('tab-original').classList.toggle('active',next==='original');
+  $('tab-contour').classList.toggle('active',next==='contour');
+  $('tab-original').setAttribute('aria-pressed',String(next==='original'));
+  $('tab-contour').setAttribute('aria-pressed',String(next==='contour'));
+  $('gallery-heading').textContent=next==='original'?'ORIGINAL CANVAS ENGINE':'INTERACTIVE CONTOUR FAMILY';
+  $('gallery-count').textContent='09 STATES · '+(next==='original'?'ORIGINAL':'CLASSIC + CONTOUR');
+  $('variant-control').style.display=next==='original'?'none':'flex';
+  $('gallery-note').textContent=next==='original'
+    ?'Original FireXCore engine: nine independently authored mathematical scenes, implemented with Canvas 2D. No WebGL or prerecorded animation.'
+    :'Optional interactive engine, adapted under MIT from Schoolees/thinking-orbs and Jakub Antalik. Nine states, two visual variants and pointer/touch interaction.';
+  syncIntegration();
+}
+$('tab-original').addEventListener('click',()=>switchMode('original'));
+$('tab-contour').addEventListener('click',()=>switchMode('contour'));
+
+function syncIntegration(){
+  const canvas=$('integration-orb');
+  if(integrationContour){integrationContour.destroy();integrationContour=null}
+  if(mode==='original'){
+    integration.state=selectedOriginal;
+    integration.canvas.style.display='block';
+    $('integration-label').textContent=messages[selectedOriginal];
+  } else {
+    integration.canvas.style.display='block';
+    integrationContour=new ThinkingOrb(canvas,{
+      state:selectedContour,size:128,theme:light?'light':'dark',variant,paused,speed,interactive:false
+    });
+    $('integration-label').textContent=messages[selectedContour];
   }
+  writeCode();
 }
-document.getElementById('heritage-variant').onclick = () => {
-  heritageVariant = heritageVariant === 'contour' ? 'classic' : 'contour';
-  document.getElementById('heritage-variant').textContent = 'Style: ' + (heritageVariant === 'contour' ? 'Contour' : 'Classic dots');
-  syncHeritage();
-};
-document.getElementById('heritage-pointer').onclick = () => {
-  heritagePointer = !heritagePointer;
-  document.getElementById('heritage-pointer').textContent = 'Pointer: ' + (heritagePointer ? 'On' : 'Off');
-  syncHeritage();
-};
-document.getElementById('heritage-size').onclick = () => {
-  heritageSize = ({32:64,64:96,96:128,128:32})[heritageSize];
-  document.getElementById('heritage-size').textContent = 'Size: ' + heritageSize + 'px';
-  syncHeritage();
-};
-themeButton.addEventListener('click', syncHeritage);
-pauseButton.addEventListener('click', syncHeritage);
-speedButton.addEventListener('click', syncHeritage);
-window.addEventListener('pagehide', () => { for(const item of heritageOrbs){item.main.destroy();item.tiny.destroy();} }, {once:true});
+function writeCode(){
+  const state=mode==='original'?selectedOriginal:selectedContour;
+  const value=mode==='original'
+    ? "import { AgentOrb } from '@firexcore/agent-orbs';\n\n<AgentOrb\n  state=\""+state+"\"\n  size={96}\n  theme=\"auto\"\n  speed={1}\n/>"
+    : "import { InteractiveOrb } from '@firexcore/agent-orbs';\n\n<InteractiveOrb\n  state=\""+state+"\"\n  variant=\""+variant+"\"\n  size={128}\n  interactive\n/>";
+  $('code-example').textContent=value;
+}
+$('copy-code').addEventListener('click',async()=>{
+  const content=$('code-example').textContent;
+  const button=$('copy-code');
+  try{
+    if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(content)}
+    else {
+      const field=document.createElement('textarea');field.value=content;field.style.position='fixed';field.style.opacity='0';
+      document.body.appendChild(field);field.select();
+      if(!document.execCommand('copy'))throw new Error('Copy unsupported');
+      field.remove();
+    }
+    button.textContent='Copied';
+  }catch{button.textContent='Select code to copy'}
+  window.setTimeout(()=>button.textContent='Copy code',1700);
+});
+$('theme').addEventListener('change',e=>{
+  light=e.target.value==='light';document.body.dataset.theme=light?'light':'dark';
+  contourInstances.forEach(({controller})=>controller.setTheme(light?'light':'dark'));
+  if(integrationContour)integrationContour.setTheme(light?'light':'dark');
+});
+$('speed').addEventListener('change',e=>{
+  speed=Number(e.target.value);
+  contourInstances.forEach(({controller})=>controller.setSpeed(speed));
+  featureInstance.setSpeed(speed);
+  integrationContour?.setSpeed(speed);
+});
+$('variant').addEventListener('change',e=>{
+  variant=e.target.value;
+  contourInstances.forEach(({controller})=>controller.setVariant(variant));
+  featureInstance.setVariant(variant);
+  integrationContour?.setVariant(variant);
+  writeCode();
+});
+$('pause').addEventListener('click',()=>{
+  paused=!paused;
+  $('pause').setAttribute('aria-pressed',String(paused));
+  $('pause').innerHTML='<span id="pause-icon">'+(paused?'▶':'Ⅱ')+'</span> '+(paused?'Resume':'Pause');
+  contourInstances.forEach(({controller})=>paused?controller.pause():controller.resume());
+  paused?featureInstance.pause():featureInstance.resume();
+  if(integrationContour)paused?integrationContour.pause():integrationContour.resume();
+});
+$('feature-state').addEventListener('change',e=>{
+  featureState=e.target.value;featureInstance.setState(featureState);
+  $('feature-state-text').textContent=messages[featureState];
+  $('feature-orb').setAttribute('aria-label','Interactive '+featureState+' orb');
+});
+$('pointer').addEventListener('change',e=>{
+  pointerEnabled=e.target.checked;featureInstance.setInteractive(pointerEnabled);
+});
+reducedQuery.addEventListener?.('change',e=>{
+  reduced=e.matches;
+  if(reduced)clock=.7;
+});
+window.addEventListener('pagehide',()=>{
+  intersection?.disconnect();
+  featureInstance?.destroy();
+  integrationContour?.destroy();
+  contourInstances.forEach(({controller})=>controller.destroy());
+},{once:true});
+switchMode('original');
