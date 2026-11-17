@@ -62,7 +62,10 @@ jobs:
               echo 'No NPM_TOKEN secret: attempting npm trusted publishing via GitHub OIDC'
               echo 'This requires a configured npmjs.org Trusted Publisher for FireXCore/agent-orbs and publish-npmjs.yml.'
             fi
-            npm publish --access public --registry=https://registry.npmjs.org/
+            if ! npm publish --access public --registry=https://registry.npmjs.org/; then
+              echo "::error title=npm publish rejected::Check that the npm credential used by this run can publish @firexcore/agent-orbs, or that npm Trusted Publishing permits this workflow."
+              exit 1
+            fi
           fi
       - name: Confirm public registry metadata
         run: |
