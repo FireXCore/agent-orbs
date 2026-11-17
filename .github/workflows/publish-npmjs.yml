@@ -45,6 +45,7 @@ jobs:
           test -f third_party/thinking-orbs/NOTICE.md
           npm pack --dry-run --json > /tmp/agent-orbs-npm-pack.json
           node -e "const p=require('/tmp/agent-orbs-npm-pack.json')[0];for(const f of ['dist/index.js','dist/index.d.ts','preview/waiting/fold.webp','preview/waiting/aperture.webp','preview/waiting/wave.webp','third_party/thinking-orbs/LICENSE','third_party/thinking-orbs/NOTICE.md']) if(!p.files.some(x=>x.path===f)) throw Error('Missing '+f)"
+      # After rotating NPM_TOKEN, start a new run from main with workflow_dispatch.
       - name: Publish public package v0.3.0 on npmjs.org
         # Keep the existing publish configuration while using the same registry verification.
         env:
