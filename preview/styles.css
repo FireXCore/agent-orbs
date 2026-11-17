@@ -123,3 +123,5 @@ body[data-theme=light] .integration-preview[data-orb-family=mono] .selected-labe
 @media(max-width:1000px){.mono-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:660px){.mono-grid{grid-template-columns:1fr}.mono-intro{align-items:start;flex-direction:column;gap:10px}}
 @media(max-width:360px){.mono-card{padding:18px 15px}.mono-sizes{gap:12px 7px}}
+
+.waiting-section{margin-top:32px;scroll-margin-top:24px}.waiting-section[hidden]{display:none}.waiting-section h3{margin:0 0 14px}.waiting-reference{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover}.orb-art .waiting-compact{position:absolute;right:14px;bottom:14px}

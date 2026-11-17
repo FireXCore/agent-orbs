@@ -8,12 +8,12 @@ import type { AgentOrbProps, OrbState } from './types';
 const LABEL: Record<OrbState, string> = {
   working: 'Processing', searching: 'Searching', solving: 'Analyzing',
   listening: 'Listening', connecting: 'Connecting', weaving: 'Planning',
-  composing: 'Composing', breathing: 'Waiting', shaping: 'Generating design'
+  composing: 'Composing', breathing: 'Waiting', shaping: 'Generating design', waiting: 'Waiting for response'
 };
 
 /** Accessible, independent 3D-inspired canvas status ornament. */
 export function AgentOrb({
-  state = 'working', size = 'regular', theme = 'auto',
+  state = 'working', waitingVariant = 'fold', size = 'regular', theme = 'auto',
   speed = 1, paused = false, color, accent, style,
   'aria-label': ariaLabel, ...canvasProps
 }: AgentOrbProps) {
@@ -31,10 +31,10 @@ export function AgentOrb({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const ink = color ?? (mode === 'dark' ? '#f4f7ff' : '#172332');
-    const activeInk = accent ?? ink;
+    const activeInk = accent ?? (state === 'waiting' && color === undefined ? (mode === 'dark' ? '#91d3ff' : '#236abc') : ink);
     const render = (seconds: number) => {
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-      paint(ctx, buildScene(state, seconds, diameter < 40), { ink, accent: activeInk, diameter });
+      paint(ctx, buildScene(state, seconds, diameter < 40, waitingVariant), { ink, accent: activeInk, diameter });
     };
     const now = () => typeof performance === 'undefined' ? 0 : performance.now() / 1000;
     // Initial deterministic paint: screenshots and reduced-motion are never blank.
@@ -51,7 +51,7 @@ export function AgentOrb({
       start();
     }
     return () => { stop(); observer?.disconnect(); };
-  }, [state, diameter, mode, speed, paused, reduced, color, accent]);
+  }, [state, waitingVariant, diameter, mode, speed, paused, reduced, color, accent]);
 
   return <canvas
     {...canvasProps}

@@ -1,4 +1,5 @@
 import { TAU, clamp, distAngle, fibonacciPoint, hash, mix, rotate, smooth, sphere, vec } from './geometry.js';
+import { buildWaitingScene } from './waiting.js';
 const make = () => ({ dots: [], lines: [] });
 const dot = (scene, x, y, z, r = 1, a = 1, hot = 0) => {
     const result = { x, y, z, r, a: clamp(a), hot: clamp(hot) };
@@ -7,8 +8,10 @@ const dot = (scene, x, y, z, r = 1, a = 1, hot = 0) => {
 };
 const from3 = (scene, p, r = 1, a = 1, hot = 0) => dot(scene, p.x, p.y, p.z, r, a, hot);
 /** Build a full animation frame in normalized -1..1 coordinates; no Canvas or React imports. */
-export function buildScene(state, seconds, compact = false) {
+export function buildScene(state, seconds, compact = false, waitingVariant = 'fold') {
     const t = Number.isFinite(seconds) ? seconds : 0;
+    if (state === 'waiting')
+        return buildWaitingScene(waitingVariant, t, compact);
     const s = make();
     const density = compact ? 0.55 : 1;
     switch (state) {

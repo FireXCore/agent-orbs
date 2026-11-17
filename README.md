@@ -5,7 +5,7 @@
 **[Interactive live demo](https://agent-orbs-demo.vercel.app/)** · [Release v0.2.0](https://github.com/FireXCore/agent-orbs/releases/tag/v0.2.0) · [Source repository](https://github.com/FireXCore/agent-orbs) · [Changelog](CHANGELOG.md)
 
 
-FireXCore provides nine independently authored procedural orb states for React + TypeScript. Version 0.2 additionally includes an **optional, MIT-licensed adaptation** of the Schoolees thinking-orbs engine with a separate renderer. The original nine-state implementation remains independent and unchanged. The named `MonoLatticeOrb` component uses the heritage engine's original grayscale classic renderer.
+FireXCore provides ten procedural orb states for React + TypeScript. Version 0.2 additionally includes an **optional, MIT-licensed adaptation** of the Schoolees thinking-orbs engine with a separate renderer. The original engine also includes a dedicated Waiting state in three designs. The named `MonoLatticeOrb` component uses the heritage engine's original grayscale classic renderer.
 
 <p align="center">
   <a href="https://agent-orbs-demo.vercel.app/">
@@ -34,7 +34,7 @@ The GIF is rendered from the original `buildScene` implementation, not a marketi
 **Live controls:** Original, Contour and Mono Lattice visual families across two engines, dark/light theme, 0.5–2× speed, classic/contour treatment, pause/resume, pointer distortion and copyable integration snippets.
 
 <details>
-<summary>View the compact original nine-state contact sheet</summary>
+<summary>View the original engine contact sheet</summary>
 
 ![Original procedural animation states](assets/gallery.svg)
 
@@ -42,7 +42,7 @@ The GIF is rendered from the original `buildScene` implementation, not a marketi
 
 ## Features
 
-- Nine states: `working`, `searching`, `solving`, `listening`, `connecting`, `weaving`, `composing`, `breathing`, `shaping`.
+- Ten original states: `working`, `searching`, `solving`, `listening`, `connecting`, `weaving`, `composing`, `breathing`, `shaping`, `waiting`.
 - True procedural 3D coordinate rotation and depth sorting, painted on a **Canvas 2D** surface (no WebGL, video, GIF or animation dependency).
 - Small (24 px) and regular (76 px) geometry presets; arbitrary custom diameter (12–256 px).
 - Single shared animation clock and per-instance offscreen pause.
@@ -51,6 +51,27 @@ The GIF is rendered from the original `buildScene` implementation, not a marketi
 - Optional monochrome ink and accent color, speed and pause controls.
 - Accessible `AgentOrbLabel` combines a compact animation with `role="status"` text.
 - React 18+ peer dependency, SSR-compatible static import, ESM/CJS/types build, strict TypeScript.
+
+## Waiting for a response
+
+| Particle Fold | Particle Aperture | Inner Wave |
+| --- | --- | --- |
+| ![Particle Fold concept](preview/waiting/fold.webp) | ![Particle Aperture concept](preview/waiting/aperture.webp) | ![Inner Wave concept](preview/waiting/wave.webp) |
+| A light travels along a folded particle surface. | A four-lobed volume gently opens and relaxes. | A moving wave lights up the inside of a stable particle volume. |
+
+The stills above are design references. The [live Waiting gallery](https://agent-orbs-demo.vercel.app/#waiting) shows procedural 3D point geometry drawn on Canvas 2D at 156px and 24px. Each animation loops without reporting completion or elapsed time.
+
+```tsx
+import { AgentOrb, AgentOrbLabel } from '@firexcore/agent-orbs';
+
+<AgentOrb state="waiting" waitingVariant="fold" />
+<AgentOrb state="waiting" waitingVariant="aperture" size={96} />
+<AgentOrbLabel state="waiting" waitingVariant="wave">
+  Waiting for a response…
+</AgentOrbLabel>
+```
+
+`waitingVariant` defaults to `fold` and applies only to `state="waiting"`.
 
 ## Contour and interactive family (v0.2.0)
 
@@ -158,15 +179,16 @@ Make the selected `state` reflect an actual action: for example, only display `l
 ## Architecture
 
 - `src/scenes.ts` — pure, independently authored mathematical scenes, no DOM or React.
+- `src/waiting.ts` — procedural particle geometry for the three Waiting designs.
 - `src/geometry.ts` — spatial transforms, distributions and interpolation.
 - `src/render.ts` — depth-sorted Canvas 2D painter.
 - `src/clock.ts` — shared RAF scheduler.
 - `src/appearance.ts` — theme and reduced-motion observability.
 - `src/AgentOrb.tsx` — React/Canvas bridge and offscreen lifecycle.
 - `src/AgentOrbLabel.tsx` — accessible status + small orb.
-- `demo/` — responsive gallery with 9 large/small examples and controls.
+- `demo/` — responsive gallery with large/small examples and controls.
 - `tests/` — geometry, finite-frame, determinism and state coverage.
-- `scripts/build-gallery-svg.mjs` — reproducible vector contact sheet of all nine states.
+- `scripts/build-gallery-svg.mjs` — reproducible vector contact sheet of the original engine.
 
 ## Deployment
 

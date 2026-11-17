@@ -1,15 +1,19 @@
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { ORB_STATES } from '../preview/core/core-types.js';
+import { ORB_STATES, WAITING_VARIANTS } from '../preview/core/core-types.js';
 const html=readFileSync(new URL('../preview/index.html',import.meta.url),'utf8');
 const js=readFileSync(new URL('../preview/preview.js',import.meta.url),'utf8');
 const css=readFileSync(new URL('../preview/styles.css',import.meta.url),'utf8');
 const readme=readFileSync(new URL('../README.md',import.meta.url),'utf8');
-for(const id of ['hero-orb','original-grid','contour-grid','mono-grid','mono-intro','tab-mono','feature-orb','integration-orb','theme','speed','pause','variant','copy-code','feature-state','pointer']){
+for(const id of ['hero-orb','original-grid','waiting-grid','contour-grid','mono-grid','mono-intro','tab-mono','feature-orb','integration-orb','theme','speed','pause','variant','copy-code','feature-state','pointer']){
   assert(html.includes('id="'+id+'"'), 'Missing live control: '+id);
 }
-assert.equal(ORB_STATES.length,9);
+assert.equal(ORB_STATES.length,10);
+assert(ORB_STATES.includes('waiting'));
+for (const variant of WAITING_VARIANTS) {
+  assert(existsSync(new URL('../preview/waiting/'+variant+'.webp', import.meta.url)), 'Missing Waiting design: '+variant);
+}
 assert(js.includes("from './core/scenes.js'"),'Demo must use canonical original engine');
 assert(js.includes("from './heritage/index.js'"),'Demo must use licensed contour engine');
 assert(js.includes("function makeMonoCard"),'Mono Lattice gallery must be live');

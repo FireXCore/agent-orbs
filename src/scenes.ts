@@ -1,5 +1,6 @@
-import type { Dot, OrbState, Scene } from './core-types';
+import type { Dot, OrbState, Scene, WaitingVariant } from './core-types';
 import { TAU, clamp, distAngle, fibonacciPoint, hash, mix, rotate, smooth, sphere, vec } from './geometry';
+import { buildWaitingScene } from './waiting';
 
 const make = (): Scene => ({ dots: [], lines: [] });
 const dot = (scene: Scene, x: number, y: number, z: number, r = 1, a = 1, hot = 0): Dot => {
@@ -10,8 +11,9 @@ const dot = (scene: Scene, x: number, y: number, z: number, r = 1, a = 1, hot = 
 const from3 = (scene: Scene, p: {x: number; y: number; z: number}, r = 1, a = 1, hot = 0) => dot(scene, p.x, p.y, p.z, r, a, hot);
 
 /** Build a full animation frame in normalized -1..1 coordinates; no Canvas or React imports. */
-export function buildScene(state: OrbState, seconds: number, compact = false): Scene {
+export function buildScene(state: OrbState, seconds: number, compact = false, waitingVariant: WaitingVariant = 'fold'): Scene {
   const t = Number.isFinite(seconds) ? seconds : 0;
+  if (state === 'waiting') return buildWaitingScene(waitingVariant, t, compact);
   const s = make();
   const density = compact ? 0.55 : 1;
   switch (state) {

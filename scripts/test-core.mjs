@@ -25,4 +25,4 @@ for (let i = 0; i < 60; i++) {
   assert(Math.abs(Math.hypot(x, y, z) - 1) < 1e-9);
 }
 assert.notDeepEqual(buildScene('shaping', 0), buildScene('shaping', 2.7));
-console.log(`PASS: ${checked} independent geometry frame checks, all 9 states, 2 sizes`);
+console.log(`PASS: ${checked} independent geometry frame checks, all ${ORB_STATES.length} states, 2 sizes`);

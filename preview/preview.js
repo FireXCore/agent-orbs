@@ -1,6 +1,7 @@
 import { buildScene } from './core/scenes.js';
 import { paint } from './core/render.js';
-import { ORB_STATES } from './core/core-types.js';
+import { ORB_STATES, WAITING_VARIANTS } from './core/core-types.js';
+import { WAITING_DESIGNS } from './core/waiting.js';
 import { ThinkingOrb, ORB_STATES as CONTOUR_STATES } from './heritage/index.js';
 
 const $ = id => document.getElementById(id);
@@ -20,13 +21,14 @@ const descriptions = {
 const messages = {
   working:'PROCESSING',searching:'SEARCHING',solving:'ANALYZING',
   listening:'LISTENING',connecting:'CONNECTING',weaving:'PLANNING',
-  composing:'COMPOSING',breathing:'WAITING',shaping:'SHAPING',
+  composing:'COMPOSING',breathing:'WAITING',shaping:'SHAPING',waiting:'WAITING',
   idle:'READY',responding:'RESPONDING'
 };
 const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 let reduced = reducedQuery.matches;
 let mode = 'original', light = false, paused = false, speed = 1;
 let selectedOriginal = 'working', selectedContour = 'responding', selectedMono = 'listening', variant = 'contour';
+let selectedWaitingVariant;
 let featureState = 'responding', pointerEnabled = true;
 let clock = 0, previous = 0;
 const originalInstances = [];
@@ -41,7 +43,7 @@ function originalInstance(canvas, state, size, options={}) {
   const dpr = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
   canvas.width = Math.round(size*dpr); canvas.height = Math.round(size*dpr);
   canvas.style.width = size+'px'; canvas.style.height = size+'px';
-  const instance = {canvas, state, size, dpr, fixedDark: !!options.fixedDark, visible:true, ctx:canvas.getContext('2d')};
+  const instance = {canvas, state, waitingVariant: options.waitingVariant, size, dpr, fixedDark: !!options.fixedDark, visible:true, ctx:canvas.getContext('2d')};
   originalInstances.push(instance);
   return instance;
 }
@@ -54,22 +56,41 @@ const intersection = typeof IntersectionObserver === 'undefined' ? null :
   }),{rootMargin:'50px'});
 function watch(instance){intersection?.observe(instance.canvas);}
 
-function makeOriginalCard(state,index) {
+function makeOriginalCard(state,index,waitingVariant) {
+  const design = waitingVariant ? WAITING_DESIGNS[waitingVariant] : null;
+  const label = design ? design.label : state;
   const card = document.createElement('button');
   card.type='button';card.className='orb-card';
   card.dataset.state=state;
-  card.setAttribute('aria-pressed',String(state===selectedOriginal));
-  card.innerHTML = '<div class="orb-art"><span class="card-index">'+String(index+1).padStart(2,'0')+' / 09</span>'+
-    '<span class="card-mark">ORIGINAL</span><canvas aria-hidden="true"></canvas></div>'+
-    '<div class="orb-meta"><div><h3>'+state+'</h3><p>'+descriptions[state]+'</p></div><span class="chevron" aria-hidden="true">↗</span></div>';
-  const orb = originalInstance(card.querySelector('canvas'),state,156);
+  if (waitingVariant) card.dataset.waitingVariant=waitingVariant;
+  card.setAttribute('aria-pressed',String(state===selectedOriginal && waitingVariant===selectedWaitingVariant));
+  card.innerHTML = '<div class="orb-art"><span class="card-index">'+String(index+1).padStart(2,'0')+(design?' / 03':' / 09')+'</span>'+
+    '<span class="card-mark">'+(design?'WAITING':'ORIGINAL')+'</span><canvas aria-hidden="true"></canvas></div>'+
+    '<div class="orb-meta"><div><h3>'+label+'</h3><p>'+(design?.description ?? descriptions[state])+'</p></div><span class="chevron" aria-hidden="true">↗</span></div>';
+  const orb = originalInstance(card.querySelector('canvas'),state,156,{waitingVariant});
   watch(orb);
+  if (design) {
+    const compact = document.createElement('canvas');
+    compact.className='waiting-compact';
+    compact.setAttribute('role','img');
+    compact.setAttribute('aria-label',label+' at 24 pixels');
+    card.querySelector('.orb-art').appendChild(compact);
+    watch(originalInstance(compact,state,24,{waitingVariant}));
+    const reference = document.createElement('img');
+    reference.className='waiting-reference';
+    reference.src='./waiting/'+waitingVariant+'.webp';
+    reference.alt=label+' concept reference';
+    reference.loading='lazy';
+    reference.width=reference.height=768;
+    card.appendChild(reference);
+  }
   card.addEventListener('click',()=>{
-    selectedOriginal=state;hero.state=state;
+    selectedOriginal=state;selectedWaitingVariant=waitingVariant;
+    hero.state=state;hero.waitingVariant=waitingVariant;
     $('hero-status').textContent=messages[state];
-    hero.canvas.setAttribute('aria-label','Live animated '+state+' orb');
-    document.querySelectorAll('#original-grid .orb-card').forEach(el=>{
-      const active=el.dataset.state===state;
+    hero.canvas.setAttribute('aria-label','Live animated '+label+' orb');
+    document.querySelectorAll('#original-grid .orb-card, #waiting-grid .orb-card').forEach(el=>{
+      const active=el.dataset.state===state && el.dataset.waitingVariant===waitingVariant;
       el.classList.toggle('active',active);el.setAttribute('aria-pressed',String(active));
     });
     if(mode==='original')syncIntegration();
@@ -77,7 +98,8 @@ function makeOriginalCard(state,index) {
   if(state===selectedOriginal)card.classList.add('active');
   return card;
 }
-ORB_STATES.forEach((state,i)=>$('original-grid').appendChild(makeOriginalCard(state,i)));
+ORB_STATES.filter(state=>state!=='waiting').forEach((state,i)=>$('original-grid').appendChild(makeOriginalCard(state,i)));
+WAITING_VARIANTS.forEach((design,i)=>$('waiting-grid').appendChild(makeOriginalCard('waiting',i,design)));
 watch(hero);watch(integration);
 
 function makeContourCard(state,index) {
@@ -172,10 +194,10 @@ function drawOriginal(instance,time){
   if(!instance.visible||!instance.ctx)return;
   if(instance===integration && mode!=='original')return;
   const palette=palettes[instance.fixedDark?'dark':light?'light':'dark'];
-  const {ctx,dpr,size,state}=instance;
+  const {ctx,dpr,size,state,waitingVariant}=instance;
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.shadowBlur=0;
-  paint(ctx,buildScene(state,time,size<40),{diameter:size,ink:palette.ink,accent:palette.accent});
+  paint(ctx,buildScene(state,time,size<40,waitingVariant),{diameter:size,ink:palette.ink,accent:palette.accent});
 }
 function frame(now) {
   const delta=previous?Math.min(.06,(now-previous)/1000):0;
@@ -191,6 +213,7 @@ function switchMode(next){
   if(next==='mono')ensureMonoGallery();
   mode=next;
   $('original-grid').hidden=next!=='original';
+  $('waiting').hidden=next!=='original';
   $('contour-grid').hidden=next!=='contour';
   $('mono-grid').hidden=next!=='mono';
   $('mono-intro').hidden=next!=='mono';
@@ -201,10 +224,10 @@ function switchMode(next){
   }
   const names={original:'ORIGINAL CANVAS ENGINE',contour:'INTERACTIVE CONTOUR FAMILY',mono:'MONO LATTICE · ORIGINAL HALFTONE DOTS'};
   $('gallery-heading').textContent=names[next];
-  $('gallery-count').textContent=next==='mono'?'09 STATES · 04 NATIVE SIZES':'09 STATES · '+(next==='original'?'ORIGINAL':'CONTOUR + CLASSIC');
+  $('gallery-count').textContent=next==='mono'?'09 STATES · 04 NATIVE SIZES':next==='original'?'10 STATES · 3 WAITING DESIGNS':'09 STATES · CONTOUR + CLASSIC';
   $('variant-control').hidden=next!=='contour';
   const notes={
-    original:'Original FireXCore engine: nine independently authored mathematical scenes, implemented with Canvas 2D. No WebGL or prerecorded animation.',
+    original:'Original FireXCore engine: ten procedural states, including three Waiting designs, implemented with Canvas 2D. No WebGL or prerecorded animation.',
     contour:'Optional interactive contour family, adapted under MIT from Schoolees/thinking-orbs and Jakub Antalik.',
     mono:'Mono Lattice uses the upstream classic monochrome dot renderer and native state/size-specific presets (128, 96, 64, 32px). No FireXCore color palette, glow, resizing, or contour substitution. MIT attribution preserved.'
   };
@@ -227,6 +250,7 @@ function syncIntegration(){
     canvas.style.width='152px';
     canvas.style.height='152px';
     integration.state=selectedOriginal;
+    integration.waitingVariant=selectedWaitingVariant;
     $('integration-label').textContent=messages[selectedOriginal];
   } else {
     const state=mode==='mono'?selectedMono:selectedContour;
@@ -243,7 +267,7 @@ function syncIntegration(){
 function writeCode(){
   let value;
   if(mode==='original') {
-    value="import { AgentOrb } from '@firexcore/agent-orbs';\n\n<AgentOrb\n  state=\""+selectedOriginal+"\"\n  size={96}\n  theme=\"auto\"\n  speed={1}\n/>";
+    value="import { AgentOrb } from '@firexcore/agent-orbs';\n\n<AgentOrb\n  state=\""+selectedOriginal+"\""+(selectedWaitingVariant?"\n  waitingVariant=\""+selectedWaitingVariant+"\"":"")+"\n  size={96}\n  theme=\"auto\"\n  speed={1}\n/>";
   } else if(mode==='mono') {
     value="import { MonoLatticeOrb } from '@firexcore/agent-orbs';\n\n<MonoLatticeOrb\n  state=\""+selectedMono+"\"\n  size={128} // also 96, 64, 32\n  theme=\"auto\"\n  interactive\n/>";
   } else {
