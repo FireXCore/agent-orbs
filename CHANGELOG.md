@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.0 — Waiting orb designs (2026-11-17)
+
+- Adds `state="waiting"` with `fold`, `aperture`, and `wave` designs for `AgentOrb` and `AgentOrbLabel`.
+- Includes the three concept images in the package and displays live regular and 24 px previews in the galleries.
+- Covers compact and full-size geometry, distinct variants and repeatable motion cycles.
+
 ## v0.2.0 — Interactive contour and Mono Lattice package release (2026-11-03)
 
 - Preserves the nine independently authored FireXCore Canvas 2D motion states, APIs and appearance.

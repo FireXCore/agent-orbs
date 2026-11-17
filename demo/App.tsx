@@ -1,7 +1,17 @@
 import { useState } from 'react';
-import { AgentOrb, AgentOrbLabel, ORB_STATES, InteractiveOrb, INTERACTIVE_ORB_STATES } from '../src';
+import { AgentOrb, AgentOrbLabel, ORB_STATES, InteractiveOrb, INTERACTIVE_ORB_STATES, WAITING_VARIANTS } from '../src';
 import type { InteractiveOrbSize } from '../src';
-import type { OrbState } from '../src';
+import type { OrbState, WaitingVariant } from '../src';
+import { WAITING_DESIGNS } from '../src/waiting';
+
+const referenceImages: Record<WaitingVariant, string> = {
+  fold: new URL('../preview/waiting/fold.webp', import.meta.url).href,
+  aperture: new URL('../preview/waiting/aperture.webp', import.meta.url).href,
+  wave: new URL('../preview/waiting/wave.webp', import.meta.url).href
+};
+const galleryEntries = ORB_STATES.flatMap<{ state: OrbState; waitingVariant?: WaitingVariant }>(state => state === 'waiting'
+  ? WAITING_VARIANTS.map(waitingVariant => ({ state, waitingVariant }))
+  : [{ state, waitingVariant: undefined }]);
 
 const descriptions: Record<OrbState, string> = {
   working: 'Four precessing tracks with orbital wake highlights',
@@ -12,12 +22,12 @@ const descriptions: Record<OrbState, string> = {
   weaving: 'Three intertwined spirals exchange perspective',
   composing: 'Layered ribbons drift through a virtual volume',
   breathing: 'A softly expanding toroidal halo',
-  shaping: 'An outline morphs across geometric primitives'
+  shaping: 'An outline morphs across geometric primitives', waiting: 'Waiting for a response'
 };
 const statuses: Record<OrbState, string> = {
   working: 'Processing request', searching: 'Searching suppliers', solving: 'Validating results',
   listening: 'Listening to input', connecting: 'Connecting to API', weaving: 'Planning next steps',
-  composing: 'Composing draft', breathing: 'Waiting for response', shaping: 'Building preview'
+  composing: 'Composing draft', breathing: 'Waiting for response', shaping: 'Building preview', waiting: 'Waiting for response'
 };
 
 export function App() {
@@ -25,17 +35,19 @@ export function App() {
   const [paused, setPaused] = useState(false);
   const [accent, setAccent] = useState(false);
   const [speed, setSpeed] = useState(1);
-  const [selected, setSelected] = useState<OrbState>('searching');
+  const [selection, setSelection] = useState<{ state: OrbState; waitingVariant?: WaitingVariant }>({ state: 'searching' });
+  const { state: selected, waitingVariant: selectedVariant } = selection;
+  const waitingProp = selectedVariant ? ' waitingVariant="' + selectedVariant + '"' : '';
   const [contour, setContour] = useState(true);
   const [interactive, setInteractive] = useState(true);
   const [interactiveSize, setInteractiveSize] = useState<InteractiveOrbSize>(96);
   return <div className="site" data-theme={dark ? 'dark' : 'light'}>
     <div className="content">
-      <header className="topbar"><a className="brand" href="#top"><span className="brand-mark">✳</span> FireXCore <span> / AGENT ORBS</span></a><span className="version">v0.2.0 · TWO MOTION ENGINES</span></header>
+      <header className="topbar"><a className="brand" href="#top"><span className="brand-mark">✳</span> FireXCore <span> / AGENT ORBS</span></a><span className="version">v0.3.0 · TWO MOTION ENGINES</span></header>
       <section className="hero" id="top">
         <div className="eyebrow">MOTION SYSTEM / 001</div>
         <h1>A language for<br/><em>systems in motion.</em></h1>
-        <p className="intro">Nine original procedural states plus an optional nine-state interactive contour family for assistants, agents and operational interfaces. Built with React, TypeScript and Canvas 2D — no WebGL, GIFs or external animation engines.</p>
+        <p className="intro">Ten original procedural states, including three Waiting designs, plus an optional nine-state interactive contour family for assistants, agents and operational interfaces. Built with React, TypeScript and Canvas 2D — no WebGL, GIFs or external animation engines.</p>
         <div className="toolbar" aria-label="Preview controls">
           <button type="button" onClick={() => setDark(!dark)}>{dark ? 'Light mode' : 'Dark mode'}</button>
           <button type="button" onClick={() => setPaused(!paused)}>{paused ? 'Play motion' : 'Pause motion'}</button>
@@ -44,16 +56,22 @@ export function App() {
         </div>
       </section>
       <section aria-labelledby="gallery" className="gallery-section"><div className="section-title"><h2 id="gallery">01 / The collection</h2><span>76 PX / 24 PX</span></div>
-        <div className="orb-grid">{ORB_STATES.map((state, index) => <button
-          type="button" key={state} onClick={() => setSelected(state)} aria-pressed={selected === state}
-          className={'orb-card' + (selected === state ? ' is-selected' : '')}>
-          <div className="orb-preview"><div className="halo"><AgentOrb state={state} size="regular" theme="auto" paused={paused} speed={speed} accent={accent ? '#6fbcff' : undefined}/></div><span className="orb-tiny"><AgentOrb state={state} size="small" theme="auto" paused={paused} speed={speed} accent={accent ? '#6fbcff' : undefined}/></span></div>
-          <div className="orb-meta"><span className="orb-number">{String(index + 1).padStart(2, '0')}</span><h3>{state}</h3><p>{descriptions[state]}</p></div>
-        </button>)}</div>
+        <div className="orb-grid">{galleryEntries.map((entry, index) => {
+          const { state, waitingVariant } = entry;
+          const active = selected === state && selectedVariant === waitingVariant;
+          const design = waitingVariant ? WAITING_DESIGNS[waitingVariant] : undefined;
+          const orb = { state, waitingVariant, theme: 'auto' as const, paused, speed, accent: accent ? '#6fbcff' : undefined };
+          return <button type="button" key={waitingVariant ?? state} onClick={() => setSelection(entry)}
+            aria-pressed={active} className={'orb-card' + (active ? ' is-selected' : '')}>
+            <div className="orb-preview"><div className="halo"><AgentOrb {...orb} size="regular"/></div><span className="orb-tiny"><AgentOrb {...orb} size="small"/></span></div>
+            <div className="orb-meta"><span className="orb-number">{String(index + 1).padStart(2, '0')}</span><h3>{design ? 'Waiting · ' + design.label : state}</h3><p>{design?.description ?? descriptions[state]}</p></div>
+            {waitingVariant && <img className="waiting-reference" src={referenceImages[waitingVariant]} alt={design?.label + ' concept reference'} loading="lazy" width="768" height="768" />}
+          </button>;
+        })}</div>
       </section>
       <section className="integration" aria-labelledby="integrate"><div className="section-title"><h2 id="integrate">02 / Integration</h2><span>READY FOR RMS</span></div>
-        <div className="integration-grid"><div className="live-example"><span className="eyebrow">ACTIVE STATE</span><div className="live-orb"><AgentOrb state={selected} size={112} theme="auto" paused={paused} speed={speed} accent={accent ? '#6fbcff' : undefined}/></div><AgentOrbLabel state={selected} theme="auto" paused={paused} speed={speed}>{statuses[selected]}</AgentOrbLabel><div className="live-foot">Live status preview — select a card above</div></div>
-          <div className="code-panel"><span className="eyebrow">REACT / TYPESCRIPT</span><pre><code>{`import { AgentOrb, AgentOrbLabel } from '@firexcore/agent-orbs';\n\n<AgentOrb state="${selected}" size="regular" />\n\n<AgentOrbLabel state="${selected}">\n  ${statuses[selected]}\n</AgentOrbLabel>`}</code></pre><p>One shared animation clock. Offscreen pause. Reduced motion. High-DPI canvas. Accessible labels. Auto light/dark.</p></div></div>
+        <div className="integration-grid"><div className="live-example"><span className="eyebrow">ACTIVE STATE</span><div className="live-orb"><AgentOrb state={selected} waitingVariant={selectedVariant} size={112} theme="auto" paused={paused} speed={speed} accent={accent ? '#6fbcff' : undefined}/></div><AgentOrbLabel state={selected} waitingVariant={selectedVariant} theme="auto" paused={paused} speed={speed}>{statuses[selected]}</AgentOrbLabel><div className="live-foot">Live status preview — select a card above</div></div>
+          <div className="code-panel"><span className="eyebrow">REACT / TYPESCRIPT</span><pre><code>{`import { AgentOrb, AgentOrbLabel } from '@firexcore/agent-orbs';\n\n<AgentOrb state="${selected}"${waitingProp} size="regular" />\n\n<AgentOrbLabel state="${selected}"${waitingProp}>\n  ${statuses[selected]}\n</AgentOrbLabel>`}</code></pre><p>One shared animation clock. Offscreen pause. Reduced motion. High-DPI canvas. Accessible labels. Auto light/dark.</p></div></div>
       </section>
       <section className="gallery-section heritage-section" aria-labelledby="heritage-gallery">
         <div className="section-title"><h2 id="heritage-gallery">03 / Interactive contour family</h2><span>9 STATES / 2 VARIANTS / POINTER REACTIVE</span></div>

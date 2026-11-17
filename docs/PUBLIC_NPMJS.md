@@ -1,6 +1,6 @@
 # Publishing to the public npmjs.org registry
 
-GitHub Packages (`npm.pkg.github.com`) and the public npm registry (`registry.npmjs.org`) are separate. The repository's source version is `@firexcore/agent-orbs@0.2.0`; publishing there requires control of the `@firexcore` npmjs scope.
+GitHub Packages (`npm.pkg.github.com`) and the public npm registry (`registry.npmjs.org`) are separate. The repository's source version is `@firexcore/agent-orbs@0.3.0`; publishing there requires control of the `@firexcore` npmjs scope.
 
 The publish workflow is `.github/workflows/publish-npmjs.yml`. It checks the package/version and source repository, builds, runs tests, confirms required ESM/CJS exports and upstream license notices, runs `npm pack --dry-run`, and publishes with `--access public`. For the initial 0.2.0 release, provenance is temporarily disabled in the workflow because a duplicate Sigstore transparency-log entry returned 409. It verifies public registry metadata with delayed polling before reporting success. It does not modify the GitHub Packages release.
 
@@ -27,8 +27,8 @@ Once authenticated, a push changing the workflow on `main` runs the publish auto
 Independently verify at https://www.npmjs.com/package/@firexcore/agent-orbs and by using:
 
 ```bash
-npm view @firexcore/agent-orbs@0.2.0 version --registry=https://registry.npmjs.org/
-npm install @firexcore/agent-orbs@0.2.0 --registry=https://registry.npmjs.org/
+npm view @firexcore/agent-orbs@0.3.0 version --registry=https://registry.npmjs.org/
+npm install @firexcore/agent-orbs@0.3.0 --registry=https://registry.npmjs.org/
 ```
 
 Do not claim npmjs publication solely because GitHub CI, GitHub Packages or Vercel succeeded.

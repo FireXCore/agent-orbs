@@ -1,7 +1,7 @@
 export { AgentOrb } from './AgentOrb';
 export { AgentOrbLabel } from './AgentOrbLabel';
-export { ORB_STATES } from './types';
-export type { AgentOrbProps, OrbState, OrbTheme, OrbSize } from './types';
+export { ORB_STATES, WAITING_VARIANTS } from './types';
+export type { AgentOrbProps, OrbState, OrbTheme, OrbSize, WaitingVariant } from './types';
 
 /** Optional nine-state contour/interactive engine, adapted under MIT from Schoolees/thinking-orbs. */
 export { InteractiveOrb } from './InteractiveOrb';
