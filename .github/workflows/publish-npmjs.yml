@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: firexcore-agent-orbs-npmjs-v0.2.0
+  group: firexcore-agent-orbs-npmjs-v0.3.0
   cancel-in-progress: false
 
 jobs:
@@ -33,31 +33,29 @@ jobs:
           node --version
           npm --version
           npm config get registry
-          node -e "const p=require('./package.json'); if(p.name!=='@firexcore/agent-orbs'||p.version!=='0.2.0'||p.private===true)process.exit(1)"
+          node -e "const p=require('./package.json'); if(p.name!=='@firexcore/agent-orbs'||p.version!=='0.3.0'||p.private===true)process.exit(1)"
           node -e "const p=require('./package.json');if(p.repository?.url!=='https://github.com/FireXCore/agent-orbs.git')process.exit(1)"
       - name: Build and test
         run: |
           npm install
           npm run check
-          node --input-type=module -e "const m=await import('./dist/index.js');for(const n of ['AgentOrb','InteractiveOrb','MonoLatticeOrb','ThinkingOrb'])if(typeof m[n]!=='function')throw Error(n)"
-          node -e "const m=require('./dist/index.cjs');for(const n of ['AgentOrb','InteractiveOrb','MonoLatticeOrb','ThinkingOrb'])if(typeof m[n]!=='function')throw Error(n)"
+          node --input-type=module -e "const m=await import('./dist/index.js');for(const n of ['AgentOrb','InteractiveOrb','MonoLatticeOrb','ThinkingOrb'])if(typeof m[n]!=='function')throw Error(n);if(!m.ORB_STATES.includes('waiting')||m.WAITING_VARIANTS.join(',')!=='fold,aperture,wave')throw Error('Missing Waiting exports')"
+          node -e "const m=require('./dist/index.cjs');for(const n of ['AgentOrb','InteractiveOrb','MonoLatticeOrb','ThinkingOrb'])if(typeof m[n]!=='function')throw Error(n);if(!m.ORB_STATES.includes('waiting')||m.WAITING_VARIANTS.join(',')!=='fold,aperture,wave')throw Error('Missing Waiting exports')"
           test -f third_party/thinking-orbs/LICENSE
           test -f third_party/thinking-orbs/NOTICE.md
           npm pack --dry-run --json > /tmp/agent-orbs-npm-pack.json
-          node -e "const p=require('/tmp/agent-orbs-npm-pack.json')[0];for(const f of ['dist/index.js','dist/index.d.ts','third_party/thinking-orbs/LICENSE','third_party/thinking-orbs/NOTICE.md']) if(!p.files.some(x=>x.path===f)) throw Error('Missing '+f)"
-      - name: Publish public package v0.2.0 on npmjs.org
-        # Temporary workaround for Sigstore Rekor TLOG_CREATE_ENTRY_ERROR (409):
-        # the equivalent provenance entry already exists but package publish failed.
-        # Keep registry verification; re-enable provenance for a future release.
+          node -e "const p=require('/tmp/agent-orbs-npm-pack.json')[0];for(const f of ['dist/index.js','dist/index.d.ts','preview/waiting/fold.webp','preview/waiting/aperture.webp','preview/waiting/wave.webp','third_party/thinking-orbs/LICENSE','third_party/thinking-orbs/NOTICE.md']) if(!p.files.some(x=>x.path===f)) throw Error('Missing '+f)"
+      - name: Publish public package v0.3.0 on npmjs.org
+        # Keep the existing publish configuration while using the same registry verification.
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: 'false'
         run: |
           set -euo pipefail
-          if npm view '@firexcore/agent-orbs@0.2.0' version --registry=https://registry.npmjs.org/ >/dev/null 2>&1; then
-            actual="$(npm view '@firexcore/agent-orbs@0.2.0' repository.url --registry=https://registry.npmjs.org/)"
+          if npm view '@firexcore/agent-orbs@0.3.0' version --registry=https://registry.npmjs.org/ >/dev/null 2>&1; then
+            actual="$(npm view '@firexcore/agent-orbs@0.3.0' repository.url --registry=https://registry.npmjs.org/)"
             test "$actual" = 'git+https://github.com/FireXCore/agent-orbs.git' -o "$actual" = 'https://github.com/FireXCore/agent-orbs.git'
-            echo 'Version 0.2.0 already exists on npmjs.org with correct repository source'
+            echo 'Version 0.3.0 already exists on npmjs.org with correct repository source'
           else
             if test -z "$NODE_AUTH_TOKEN"; then
               echo 'No NPM_TOKEN secret: attempting npm trusted publishing via GitHub OIDC'
@@ -68,14 +66,14 @@ jobs:
       - name: Confirm public registry metadata
         run: |
           set -euo pipefail
-          url='https://registry.npmjs.org/%40firexcore%2Fagent-orbs/0.2.0'
+          url='https://registry.npmjs.org/%40firexcore%2Fagent-orbs/0.3.0'
           # npm may return success while its public metadata is still processing.
           for attempt in $(seq 1 36); do
             http="$(curl --silent --show-error --location --max-time 12 --output /tmp/agent-orbs-public.json --write-out '%{http_code}' "$url" || true)"
             if [[ "$http" == '200' ]] && node - <<'NODE'
           const p=require('/tmp/agent-orbs-public.json');
           const repo=typeof p.repository==='string'?p.repository:p.repository?.url||'';
-          if(p.name!=='@firexcore/agent-orbs'||p.version!=='0.2.0'||!p.dist?.tarball?.startsWith('https://registry.npmjs.org/')||!repo.includes('github.com/FireXCore/agent-orbs'))process.exit(1);
+          if(p.name!=='@firexcore/agent-orbs'||p.version!=='0.3.0'||!p.dist?.tarball?.startsWith('https://registry.npmjs.org/')||!repo.includes('github.com/FireXCore/agent-orbs'))process.exit(1);
           console.log('PUBLIC_NPMJS_VERIFIED',p.name,p.version,p.dist.tarball);
           NODE
             then

@@ -1,8 +1,8 @@
 # FireXCore Agent Orbs
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-121212?logo=vercel)](https://agent-orbs-demo.vercel.app/) [![MIT License](https://img.shields.io/badge/License-MIT-blue)](LICENSE) [![Release v0.2.0](https://img.shields.io/badge/Release-v0.2.0-0a7)](https://github.com/FireXCore/agent-orbs/releases/tag/v0.2.0) [![CI](https://github.com/FireXCore/agent-orbs/actions/workflows/ci.yml/badge.svg)](https://github.com/FireXCore/agent-orbs/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-121212?logo=vercel)](https://agent-orbs-demo.vercel.app/) [![MIT License](https://img.shields.io/badge/License-MIT-blue)](LICENSE) [![npm](https://img.shields.io/npm/v/@firexcore/agent-orbs)](https://www.npmjs.com/package/@firexcore/agent-orbs) [![CI](https://github.com/FireXCore/agent-orbs/actions/workflows/ci.yml/badge.svg)](https://github.com/FireXCore/agent-orbs/actions/workflows/ci.yml)
 
-**[Interactive live demo](https://agent-orbs-demo.vercel.app/)** · [Release v0.2.0](https://github.com/FireXCore/agent-orbs/releases/tag/v0.2.0) · [Source repository](https://github.com/FireXCore/agent-orbs) · [Changelog](CHANGELOG.md)
+**[Interactive live demo](https://agent-orbs-demo.vercel.app/)** · [npm package](https://www.npmjs.com/package/@firexcore/agent-orbs) · [Source repository](https://github.com/FireXCore/agent-orbs) · [Changelog](CHANGELOG.md)
 
 
 FireXCore provides ten procedural orb states for React + TypeScript. Version 0.2 additionally includes an **optional, MIT-licensed adaptation** of the Schoolees thinking-orbs engine with a separate renderer. The original engine also includes a dedicated Waiting state in three designs. The named `MonoLatticeOrb` component uses the heritage engine's original grayscale classic renderer.
@@ -52,7 +52,7 @@ The GIF is rendered from the original `buildScene` implementation, not a marketi
 - Accessible `AgentOrbLabel` combines a compact animation with `role="status"` text.
 - React 18+ peer dependency, SSR-compatible static import, ESM/CJS/types build, strict TypeScript.
 
-## Waiting for a response
+## Waiting for a response (v0.3.0)
 
 | Particle Fold | Particle Aperture | Inner Wave |
 | --- | --- | --- |
@@ -153,7 +153,7 @@ Open http://127.0.0.1:5174/preview/. The preview is generated from the exact sam
 
 ## Use in RMS (or any React application)
 
-To install from GitHub Packages after configuring authenticated access, use `@firexcore/agent-orbs@0.2.0`. For local development, install from a sibling folder:
+Install the current package with `npm install @firexcore/agent-orbs@0.3.0`. For local development, install from a sibling folder:
 
 ```bash
 npm install ../agent-orbs
@@ -198,25 +198,25 @@ Make the selected `state` reflect an actual action: for example, only display `l
 
 ## Releases
 
-- **Latest release:** [v0.2.0](https://github.com/FireXCore/agent-orbs/releases/tag/v0.2.0)
+- **GitHub release for v0.2.0:** [v0.2.0](https://github.com/FireXCore/agent-orbs/releases/tag/v0.2.0)
 - **Downloadable distributable:** [firexcore-agent-orbs-0.2.0.tgz](https://github.com/FireXCore/agent-orbs/releases/download/v0.2.0/firexcore-agent-orbs-0.2.0.tgz)
 - **Changelog:** [CHANGELOG.md](CHANGELOG.md)
 - **Interactive demo:** [agent-orbs-demo.vercel.app](https://agent-orbs-demo.vercel.app/)
 
-**Public npmjs.org:** [@firexcore/agent-orbs@0.2.0](https://www.npmjs.com/package/@firexcore/agent-orbs) — confirmed in the public npm registry. Install without any GitHub Packages authentication:
+**Public npmjs.org:** Install [@firexcore/agent-orbs@0.3.0](https://www.npmjs.com/package/@firexcore/agent-orbs/v/0.3.0) without GitHub Packages authentication:
 
 ```bash
-npm install @firexcore/agent-orbs@0.2.0
+npm install @firexcore/agent-orbs@0.3.0
 ```
 
 If you previously configured `@firexcore` to use GitHub Packages, remove the old registry override before installing from npmjs.org:
 
 ```bash
 npm config delete @firexcore:registry
-npm install @firexcore/agent-orbs@0.2.0 --registry=https://registry.npmjs.org/
+npm install @firexcore/agent-orbs@0.3.0 --registry=https://registry.npmjs.org/
 ```
 
-The GitHub release [v0.2.0](https://github.com/FireXCore/agent-orbs/releases/tag/v0.2.0) also provides the downloadable `.tgz`. The same version remains available separately through GitHub Packages for authenticated users.
+The GitHub release [v0.2.0](https://github.com/FireXCore/agent-orbs/releases/tag/v0.2.0) also provides the downloadable `.tgz`. Version 0.2.0 is also available from GitHub Packages for authenticated users.
 
 **Provenance note:** The initial public npmjs release was published without Sigstore provenance because duplicate transparency-log entry `TLOG_CREATE_ENTRY_ERROR (409)` blocked earlier publish attempts. Future releases should restore provenance using npm Trusted Publishing (OIDC) after resolving the upstream signing issue. CI and package build tests passed, and independent public-registry metadata verification succeeded.
 

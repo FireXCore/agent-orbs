@@ -1,6 +1,6 @@
 {
   "name": "@firexcore/agent-orbs",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": false,
   "description": "Procedural agent orbs with original states plus opt-in interactive contour variants",
   "type": "module",
@@ -12,6 +12,7 @@
     "dist",
     "LICENSE",
     "README.md",
+    "preview/waiting/*.webp",
     "third_party/thinking-orbs/LICENSE",
     "third_party/thinking-orbs/NOTICE.md"
   ],

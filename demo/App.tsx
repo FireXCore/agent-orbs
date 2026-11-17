@@ -43,7 +43,7 @@ export function App() {
   const [interactiveSize, setInteractiveSize] = useState<InteractiveOrbSize>(96);
   return <div className="site" data-theme={dark ? 'dark' : 'light'}>
     <div className="content">
-      <header className="topbar"><a className="brand" href="#top"><span className="brand-mark">✳</span> FireXCore <span> / AGENT ORBS</span></a><span className="version">v0.2.0 · TWO MOTION ENGINES</span></header>
+      <header className="topbar"><a className="brand" href="#top"><span className="brand-mark">✳</span> FireXCore <span> / AGENT ORBS</span></a><span className="version">v0.3.0 · TWO MOTION ENGINES</span></header>
       <section className="hero" id="top">
         <div className="eyebrow">MOTION SYSTEM / 001</div>
         <h1>A language for<br/><em>systems in motion.</em></h1>
